@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "run_id": "web-replay-78a3a22a3f17",
+  "outputs": {
+    "member_id": "[REDACTED]",
+    "product": "Checking",
+    "nickname": "[REDACTED]",
+    "review_ready": true
+  },
+  "outcome": null,
+  "error": null,
+  "model_calls": 0,
+  "human_interventions": 0
+}

@@ -6,10 +6,10 @@ A small computer-use backend for a synthetic legacy banking application: real br
 versioned capabilities, deterministic replay, policy enforcement, and human control of the same live session.
 
 > **Verified:** Gemini completed genuine live discovery in seven model calls. Its generated capability
-> replayed successfully with different inputs and **zero model calls**. The local suite passes **85 tests**,
+> replayed successfully with different inputs and **zero model calls**. The local suite passes **91 tests**,
 > lint, formatting, and strict typing. Inspect the [evidence index](evidence/README.md) and [report](REPORT.md).
 
-![Synthetic banking review screen, with sensitive fields masked](evidence/live/replay-ac60b915dc4f/checkpoint-0021.png)
+![Capability Studio showing a completed replay against the synthetic banking UI](docs/screenshots/web-dashboard.png)
 
 ## Start here
 
@@ -24,6 +24,30 @@ uv run playwright install chromium
 # Linux only, if browser system libraries are missing:
 # uv run playwright install --with-deps chromium
 ```
+
+### Recommended: use the web dashboard
+
+```bash
+uv run capabilities web
+```
+
+Open **[Capability Studio](http://127.0.0.1:8766)**. This one command starts the dashboard and a separate
+banking sandbox on port 8767. Choose a saved capability, enter a member ID, product, and nickname, then
+click **Run capability**. Watch the actual banking session and inspect verified outputs, the action log,
+and the capability JSON. Replay needs no key. **Discover with AI** uses a locally configured provider
+key and adds a new capability after verified success. Keys never go through the web form.
+
+Choose **Session expired** to demonstrate takeover entirely inside the web page: claim the session,
+click **Restore session** in the live banking view, and return control. The expand button enlarges the
+view. The final frame remains visible after the browser closes. A new run gets a fresh browser context.
+
+Read the [five-minute web demo](docs/WEB_DEMO.md) for the full presentation and testing sequence.
+The bundled default capability is an exact copy of the recorded Gemini artifact, with its provenance
+preserved. Newly discovered capabilities and masked evidence are saved under ignored `runs/web/`.
+The local preview shows synthetic values to the operator; model screenshots and saved evidence remain
+masked. The separate **manual sandbox** link opens an independent session, not the engine's session.
+
+### Terminal alternative
 
 Start the sandbox in terminal A:
 
@@ -202,6 +226,7 @@ limitations are indexed in [evidence/README.md](evidence/README.md).
 | `surface.py` | Surface protocol; Playwright adapter and bounded visual targeting |
 | `policy.py`, `profiles/harbor.json` | Operator-owned action and navigation permissions |
 | `session.py`, `operator.py` | Control ownership, takeover, validation, and local operator page |
+| `dashboard.py`, `web_static/` | Web run orchestration, live session preview, parameter forms, and takeover controls |
 | `evidence.py` | Allowlisted event records, redaction, atomic artifact writes |
 | `sandbox/` | Separate synthetic application; never imported by the execution engine |
 
@@ -213,6 +238,8 @@ For a step-by-step acceptance walkthrough, see [docs/TESTING.md](docs/TESTING.md
 
 ```mermaid
 flowchart LR
+    W[Web dashboard or CLI] --> D
+    W --> R
     G[Goal and input contract] --> D[Discovery engine]
     O[Masked live observation] --> M[Model planner]
     M -->|Typed proposed action| D
@@ -244,6 +271,9 @@ flowchart LR
 - The local `.env` loader recognizes only the keys shown in `.env.example`; exported environment
   variables take precedence. `CAPABILITIES_BROWSER_CHANNEL=chrome` can use installed Chrome, but the
   pinned Playwright build is recommended for reproducibility.
+- The dashboard binds to loopback, permits one active run, and retains the latest 20 run views in memory.
+  Run history and live previews reset on restart; capability JSON and masked disk evidence persist.
+  This is a local control panel, with origin/CSRF checks and no remote multi-user authentication.
 - Keep real credentials and customer data out of this demonstration. Production redaction, identity,
   retention controls, remote session isolation, and vendor qualification require further work.
 

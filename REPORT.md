@@ -13,6 +13,11 @@ steps become a capability. `ReplayEngine` consumes that artifact without a provi
 Both paths use the same `Surface` protocol. JSON files and sequential events are sufficient for this
 single-session prototype; a queue or database would not strengthen the central guarantee.
 
+`Capability Studio` adds a local web control plane over the same engines: parameter forms, capability
+selection, genuine discovery, result inspection, a live browser preview, and run cancellation. One
+command starts the console and sandbox on separate loopback origins. The console never calls banking
+business routes on the runner's behalf; execution still uses the browser surface.
+
 The app profile deliberately contains control permissions and known state detectors, not an ordered
 workflow. The goal contract defines the required result; it does not reveal the path. Discovery still
 has to decide which control to use, bind the right parameter, and recognize when to finish. Gemini's
@@ -91,6 +96,8 @@ of blocking conditions, then resumes. An invalid handback returns to `waiting`; 
 the run. The browser integration tests retain and compare the exact page/context objects across
 handoff. Offline handoff evidence uses a clearly labeled scripted operator, exercising the real control
 protocol and UI. The headed CLI supports an actual person through the same seam.
+The web console also forwards pointer/keyboard input into the existing browser only under the human
+ownership epoch. Its preview is the actual session; it never swaps in an independent banking iframe.
 
 ## Safety
 
@@ -107,6 +114,8 @@ unknown screens withhold pixels. These are application-specific masks, not a gen
 The sample contains only synthetic data and makes no regulatory-compliance claim. Production requires
 qualified masks, restricted model egress, retention controls, audited operator identity, and isolated
 workers. The local console trusts the OS user, uses origin/CSRF checks, and has no enterprise login.
+The web console's in-memory preview and caller outputs expose synthetic values locally; those pixels
+are never sent to the model or saved as execution evidence. Unknown screens withhold the preview.
 
 ## Cuts
 
@@ -116,7 +125,7 @@ and automatic cross-tenant specialization are omitted. Crash recovery closes the
 than pretending an in-memory session can be reconstructed. There is no autonomous LLM fallback on replay.
 
 Only repeated-run stability is included as a stretch goal. The genuine discovery/replay evidence and
-submission gate pass; 85 local tests cover the execution and control boundaries. Next steps are a
+submission gate pass; 91 local tests cover the execution and control boundaries. Next steps are a
 manual desktop handoff recording, vendor/profile qualification, and an approval registry. Provider
 timeouts and invalid proposals encountered during development are retained as failed evidence; one
 successful model run is not a discovery reliability benchmark.

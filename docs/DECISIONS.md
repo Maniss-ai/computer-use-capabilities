@@ -1,5 +1,15 @@
 # Design discussion
 
+**Why add a web dashboard?** It makes the core guarantees visible without typing a command for every
+invocation. The dashboard calls the existing engines, displays the actual browser, and forwards manual
+input under the same ownership lock and epoch. It does not replace UI automation with banking API
+calls. A small presentation pause after each action makes replay observable without changing decisions.
+One active run and bounded in-memory history keep this a local demonstration rather than a job platform.
+
+**Is this a manual macro recorder?** No. Discovery asks the model to choose actions from current UI
+observations. The resulting capability binds caller parameters and verifies outputs. Manual takeover
+records redacted audit metadata, not a reusable macro; assisted discovery still withholds its artifact.
+
 These questions connect the implementation to its trade-offs. The code and evidence, rather than
 framework names, are the basis for discussing the submission.
 

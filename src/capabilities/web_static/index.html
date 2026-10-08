@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="studio-csrf" content="{{csrf}}" />
+    <title>Capability Studio · Computer-use automation</title>
+    <link rel="stylesheet" href="/assets/studio.css" />
+    <script src="/assets/studio.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Capability Studio home"
+        ><span class="brandmark">C<span>↗</span></span
+        >Capability <strong>Studio</strong></a
+      >
+      <div class="top-right">
+        <span class="local"><i></i> Local workspace</span
+        ><span class="tag">Synthetic banking demo</span>
+      </div>
+    </header>
+    <main>
+      <section class="intro">
+        <div>
+          <div class="eyebrow">COMPUTER-USE AUTOMATION</div>
+          <h1>One workflow. New inputs. No repeated reasoning.</h1>
+          <p>
+            Discover a workflow with AI, save the verified steps, then replay
+            them without a model.
+          </p>
+        </div>
+        <a id="sandbox-link" class="quiet-link" target="_blank" rel="noopener"
+          >Open manual sandbox ↗</a
+        >
+      </section>
+      <section class="flow" aria-label="How it works">
+        <div>
+          <span class="flow-number">01</span>
+          <div>
+            <strong>Discover</strong>
+            <p>AI observes the UI and chooses each action.</p>
+          </div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div>
+          <span class="flow-number">02</span>
+          <div>
+            <strong>Save</strong>
+            <p>Verified success becomes a reusable capability.</p>
+          </div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div>
+          <span class="flow-number">03</span>
+          <div>
+            <strong>Replay</strong>
+            <p>New member. Same capability. Zero model calls.</p>
+          </div>
+        </div>
+      </section>
+      <div class="workspace-grid">
+        <aside class="panel setup">
+          <div class="panel-heading">
+            <div>
+              <div class="eyebrow">CONTROL PANEL</div>
+              <h2>Start a run</h2>
+            </div>
+            <span class="subtle">01 / configure</span>
+          </div>
+          <div class="mode-tabs" role="group" aria-label="Run mode">
+            <button id="replay-mode" class="selected" aria-pressed="true">
+              Replay capability</button
+            ><button id="discover-mode" aria-pressed="false">
+              Discover with AI
+            </button>
+          </div>
+          <p id="mode-description" class="help">
+            Use a saved workflow with new inputs. No model or API key needed.
+          </p>
+          <form id="run-form">
+            <label for="capability">Saved capability</label
+            ><select id="capability" required></select>
+            <div id="capability-meta" class="inline-note"></div>
+            <div id="discovery-fields" hidden>
+              <label for="provider">Model provider</label
+              ><select id="provider">
+                <option value="gemini">Gemini</option>
+                <option value="anthropic">Anthropic</option>
+              </select>
+              <p id="provider-status" class="help"></p>
+              <div class="goal">
+                <strong>Discovery goal</strong>
+                <p>
+                  Find the member, prepare the requested sub-account, and stop
+                  at review. AI chooses the steps; you do not demonstrate them
+                  first.
+                </p>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <label for="member-id">Member ID</label
+            ><input
+              id="member-id"
+              name="member_id"
+              value="10077"
+              inputmode="numeric"
+              pattern="[0-9]{5}"
+              maxlength="5"
+              required
+              autocomplete="off"
+            />
+            <p class="help field-help">
+              Demo members: 10023, 10042, 10077. Try 99999 for a not-found
+              result.
+            </p>
+            <div class="field-row">
+              <div>
+                <label for="product">Product</label
+                ><select id="product">
+                  <option>Checking</option>
+                  <option>Savings</option>
+                </select>
+              </div>
+              <div>
+                <label for="nickname">Account nickname</label
+                ><input
+                  id="nickname"
+                  value="Travel Fund"
+                  maxlength="80"
+                  required
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <label for="scenario">Test scenario</label
+            ><select id="scenario">
+              <option value="normal">Normal workflow</option>
+              <option value="session_expired">
+                Session expired · human takeover
+              </option>
+              <option value="unexpected_dialog">
+                Unexpected dialog · human takeover
+              </option>
+              <option value="interstitial">
+                Known notice · automatic recovery
+              </option>
+              <option value="slow">Slow loading</option>
+              <option value="validation">Form validation error</option>
+              <option value="permission_denied">Permission denied</option>
+              <option value="app_error">Application unavailable</option>
+              <option value="ambiguous">Duplicate control</option>
+              <option value="visual_missing">Missing visual target</option>
+              <option value="prompt_injection">
+                Untrusted page instruction
+              </option>
+            </select>
+            <p id="scenario-help" class="help">
+              The run stops at the review screen. It never creates an account.
+            </p>
+            <button class="primary run-button" id="start" type="submit">
+              <span>▶</span> Run capability
+            </button>
+            <button class="danger-outline" id="stop" type="button" hidden>
+              Stop current run
+            </button>
+            <p class="error" id="form-error" role="alert"></p>
+          </form>
+          <div class="tip">
+            <span>↳</span>
+            <p>
+              <strong>Try this first</strong><br />Run once, change the member
+              and nickname, then run again. Watch the outputs change while model
+              calls stay at zero.
+            </p>
+          </div>
+        </aside>
+        <section class="execution">
+          <div class="metrics" aria-label="Run statistics">
+            <div>
+              <span>RUN STATUS</span><strong id="run-status">Ready</strong>
+            </div>
+            <div>
+              <span>UI ACTIONS</span><strong id="action-count">—</strong>
+            </div>
+            <div>
+              <span>MODEL CALLS</span><strong id="model-count">0</strong>
+            </div>
+            <div><span>ELAPSED</span><strong id="elapsed">—</strong></div>
+          </div>
+          <section class="panel browser-panel">
+            <div class="browser-bar">
+              <div class="window-dots"><i></i><i></i><i></i></div>
+              <span
+                >Harbor Ledger
+                <span class="muted">/ engine-owned browser</span></span
+              ><span id="live-status" class="live-status"
+                >Waiting for a run</span
+              >
+              <button
+                id="expand-view"
+                class="secondary"
+                type="button"
+                aria-label="Expand banking view"
+              >
+                ⛶
+              </button>
+            </div>
+            <div id="takeover" class="takeover" hidden>
+              <div>
+                <strong id="takeover-title">Human attention needed</strong>
+                <p id="takeover-reason"></p>
+              </div>
+              <div class="takeover-buttons">
+                <button id="claim" class="primary" type="button">
+                  Claim session</button
+                ><button id="resume" class="primary" type="button" hidden>
+                  Return to automation</button
+                ><button id="abort" class="secondary" type="button">
+                  Abort
+                </button>
+              </div>
+            </div>
+            <div class="viewport" id="viewport">
+              <div class="empty-state" id="empty-state">
+                <div class="empty-icon">↗</div>
+                <h2>The browser is ready when you are.</h2>
+                <p>
+                  Start a run to see the engine operate the banking
+                  application.<br />This is the actual browser session, not a
+                  simulated animation.
+                </p>
+                <div class="empty-steps">
+                  <span>Search member</span><b>→</b><span>Prepare request</span
+                  ><b>→</b><span>Verify review</span>
+                </div>
+              </div>
+              <img
+                id="browser-image"
+                alt="Live banking browser session"
+                hidden
+              />
+            </div>
+            <div id="human-tools" class="human-tools" hidden>
+              <p>
+                You own this session. Click the banking screen to interact.
+                After resolving the interruption, return control.
+              </p>
+              <div>
+                <input
+                  id="manual-text"
+                  placeholder="Text for the focused field"
+                  maxlength="80"
+                  aria-label="Text for the focused browser field"
+                /><button id="type-text" class="secondary">Type text</button
+                ><button class="secondary key" data-key="Tab">Tab</button
+                ><button class="secondary key" data-key="Enter">Enter</button
+                ><button class="secondary key" data-key="Escape">Esc</button>
+              </div>
+            </div>
+            <div class="browser-footer">
+              <span id="screen-name">No active session</span
+              ><span id="preview-note"
+                >Local live view · saved evidence is masked</span
+              >
+            </div>
+          </section>
+          <section class="panel details-panel">
+            <div class="detail-tabs" role="group" aria-label="Run details">
+              <button class="active" data-panel="activity-panel">
+                Activity</button
+              ><button data-panel="result-panel">Result</button
+              ><button data-panel="artifact-panel">Capability</button>
+            </div>
+            <div id="activity-panel" class="detail-content">
+              <div id="activity-empty" class="muted">
+                Actions, verified checkpoints, and control transfers appear
+                here.
+              </div>
+              <ol id="events" class="events" aria-label="Run activity"></ol>
+            </div>
+            <div id="result-panel" class="detail-content" hidden>
+              <div id="result-empty" class="muted">
+                Verified outputs will appear when the run finishes.
+              </div>
+              <div id="result-content" hidden>
+                <h3 id="result-title"></h3>
+                <p id="result-message"></p>
+                <dl id="outputs"></dl>
+                <p id="evidence-note" class="inline-note"></p>
+                <button
+                  id="use-discovered"
+                  class="primary"
+                  type="button"
+                  hidden
+                >
+                  Use this capability with new inputs
+                </button>
+              </div>
+            </div>
+            <div id="artifact-panel" class="detail-content" hidden>
+              <div class="artifact-header">
+                <div>
+                  <h3>Reusable capability</h3>
+                  <p class="help">
+                    Input references, verified checkpoints, and provenance. No
+                    member-specific values.
+                  </p>
+                </div>
+                <button id="download-artifact" class="secondary">
+                  Download JSON
+                </button>
+              </div>
+              <div id="artifact-steps" class="artifact-steps"></div>
+              <details>
+                <summary>Inspect the full artifact</summary>
+                <pre id="artifact-json"></pre>
+              </details>
+            </div>
+          </section>
+        </section>
+      </div>
+      <section class="panel history">
+        <div class="panel-heading">
+          <h2>Recent runs</h2>
+          <span class="subtle">This dashboard session · latest 20</span>
+        </div>
+        <div id="history-empty" class="muted">
+          Run history will appear here. Saved capabilities and evidence survive
+          a restart.
+        </div>
+        <div id="history-list"></div>
+      </section>
+      <footer class="page-footer">
+        <span
+          >Built for inspectable automation. Every successful result is checked
+          against the UI.</span
+        ><span
+          >AI discovers · deterministic code replays · humans resolve
+          exceptions</span
+        >
+      </footer>
+    </main>
+  </body>
+</html>

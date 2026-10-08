@@ -1,5 +1,8 @@
 # Acceptance walkthrough
 
+For the complete browser-based walkthrough, start with [WEB_DEMO.md](WEB_DEMO.md). The commands below
+exercise the same engines through the CLI and remain useful for development and regression checks.
+
 Run the setup and sandbox commands in the root README first. Leave the sandbox running in terminal A.
 Use terminal B for the commands below. Replay and all automated tests need no model API key.
 

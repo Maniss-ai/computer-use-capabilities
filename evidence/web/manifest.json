@@ -1,0 +1,18 @@
+{
+  "recorded_at": "2026-10-08T08:34:06.238436+00:00",
+  "entry_point": "Web dashboard buttons and forms in the browser",
+  "discovery_run": "web-discover-61c838849072",
+  "discovery_model": "gemini-3.1-flash-lite",
+  "discovery_model_calls": 7,
+  "replay_run": "web-replay-78a3a22a3f17",
+  "replay_model_calls": 0,
+  "artifact_sha256": "ae2a7cacc4bdd421e90dfdc60c0574c1c3d3bf96a17e9278328508c9e3acc437",
+  "changed_inputs": [
+    "member_id",
+    "product",
+    "nickname"
+  ],
+  "human_interventions": 0,
+  "actor": "Dashboard controls operated by a computer-use assistant; model discovery performed by real Gemini API, not a test planner.",
+  "live_preview": "Synthetic values displayed locally; persisted execution screenshots masked."
+}

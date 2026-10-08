@@ -133,6 +133,10 @@ def parser() -> argparse.ArgumentParser:
     commands = root.add_subparsers(dest="command", required=True)
     serve = commands.add_parser("sandbox", help="Serve the synthetic legacy banking UI")
     serve.add_argument("--port", type=int, default=8765)
+    web = commands.add_parser("web", help="Start the web dashboard and its banking sandbox")
+    web.add_argument("--port", type=int, default=8766)
+    web.add_argument("--bank-port", type=int, default=8767)
+    web.add_argument("--evidence", default="runs/web")
     schema = commands.add_parser("schema", help="Export the artifact JSON Schema")
     schema.add_argument("--out", default="schemas/capability.schema.json")
     for command in ("discover", "replay"):
@@ -165,6 +169,20 @@ def parser() -> argparse.ArgumentParser:
 def main() -> None:
     load_local_env()
     args = parser().parse_args()
+    if args.command == "web":
+        from capabilities.dashboard import serve_dashboard
+
+        try:
+            asyncio.run(serve_dashboard(args.port, args.bank_port, Path(args.evidence)))
+        except OSError:
+            print(
+                "A local port is unavailable. Stop the previous dashboard or choose --port and --bank-port.",
+                file=sys.stderr,
+            )
+            raise SystemExit(2) from None
+        except KeyboardInterrupt:
+            pass
+        return
     if args.command == "sandbox":
         uvicorn.run(
             "capabilities.sandbox.app:app", host="127.0.0.1", port=args.port, access_log=False

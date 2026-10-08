@@ -1,0 +1,229 @@
+{
+  "schema_version": "1.0",
+  "capability_version": "1.0.0",
+  "profile": "harbor-ledger/v1",
+  "goal": {
+    "name": "prepare_subaccount_review",
+    "inputs": {
+      "member_id": {
+        "type": "string",
+        "description": "Synthetic five-digit member reference",
+        "format": "member_id",
+        "choices": [],
+        "sensitive": true,
+        "max_length": 80
+      },
+      "product": {
+        "type": "string",
+        "description": "Requested sub-account product",
+        "format": "text",
+        "choices": [
+          "Savings",
+          "Checking"
+        ],
+        "sensitive": false,
+        "max_length": 80
+      },
+      "nickname": {
+        "type": "string",
+        "description": "User-chosen sub-account nickname",
+        "format": "text",
+        "choices": [],
+        "sensitive": true,
+        "max_length": 80
+      }
+    },
+    "outputs": {
+      "member_id": {
+        "type": "string",
+        "target": {
+          "kind": "field",
+          "name": "Member reference",
+          "scope": "workspace"
+        },
+        "sensitive": true,
+        "true_when": null
+      },
+      "product": {
+        "type": "string",
+        "target": {
+          "kind": "field",
+          "name": "Product",
+          "scope": "workspace"
+        },
+        "sensitive": false,
+        "true_when": null
+      },
+      "nickname": {
+        "type": "string",
+        "target": {
+          "kind": "field",
+          "name": "Nickname",
+          "scope": "workspace"
+        },
+        "sensitive": true,
+        "true_when": null
+      },
+      "review_ready": {
+        "type": "boolean",
+        "target": {
+          "kind": "field",
+          "name": "Status",
+          "scope": "workspace"
+        },
+        "sensitive": false,
+        "true_when": "Ready for review"
+      }
+    },
+    "success_screen": "Review sub-account",
+    "checks": [
+      {
+        "target": {
+          "kind": "field",
+          "name": "Member reference",
+          "scope": "workspace"
+        },
+        "equals": {
+          "kind": "input",
+          "name": "member_id"
+        }
+      },
+      {
+        "target": {
+          "kind": "field",
+          "name": "Product",
+          "scope": "workspace"
+        },
+        "equals": {
+          "kind": "input",
+          "name": "product"
+        }
+      },
+      {
+        "target": {
+          "kind": "field",
+          "name": "Nickname",
+          "scope": "workspace"
+        },
+        "equals": {
+          "kind": "input",
+          "name": "nickname"
+        }
+      },
+      {
+        "target": {
+          "kind": "field",
+          "name": "Status",
+          "scope": "workspace"
+        },
+        "equals": {
+          "kind": "constant",
+          "value": "Ready for review"
+        }
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "step_001",
+      "before": "Find a member",
+      "action": {
+        "op": "fill",
+        "target": {
+          "kind": "label",
+          "name": "Member ID",
+          "scope": "workspace"
+        },
+        "value": {
+          "kind": "input",
+          "name": "member_id"
+        }
+      },
+      "after": "Find a member",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_002",
+      "before": "Find a member",
+      "action": {
+        "op": "click",
+        "target": {
+          "kind": "button",
+          "name": "Search",
+          "scope": "workspace"
+        }
+      },
+      "after": "Member details",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_003",
+      "before": "Member details",
+      "action": {
+        "op": "click",
+        "target": {
+          "kind": "visual",
+          "name": "New sub-account",
+          "scope": "workspace"
+        }
+      },
+      "after": "Prepare sub-account",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_004",
+      "before": "Prepare sub-account",
+      "action": {
+        "op": "select",
+        "target": {
+          "kind": "label",
+          "name": "Product",
+          "scope": "workspace"
+        },
+        "value": {
+          "kind": "input",
+          "name": "product"
+        }
+      },
+      "after": "Prepare sub-account",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_005",
+      "before": "Prepare sub-account",
+      "action": {
+        "op": "fill",
+        "target": {
+          "kind": "label",
+          "name": "Nickname",
+          "scope": "workspace"
+        },
+        "value": {
+          "kind": "input",
+          "name": "nickname"
+        }
+      },
+      "after": "Prepare sub-account",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_006",
+      "before": "Prepare sub-account",
+      "action": {
+        "op": "click",
+        "target": {
+          "kind": "button",
+          "name": "Review request",
+          "scope": "workspace"
+        }
+      },
+      "after": "Review sub-account",
+      "timeout_ms": 3000
+    }
+  ],
+  "provenance": {
+    "source": "llm_discovery",
+    "run_id": "web-discover-61c838849072",
+    "model": "gemini-3.1-flash-lite"
+  }
+}

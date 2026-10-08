@@ -21,6 +21,17 @@ This supplies valid choices without telling the model their order.
 
 ## Offline regression evidence
 
+An additional [web dashboard demonstration](web/manifest.json) records genuine Gemini discovery
+initiated through the browser, followed by replay of that newly generated artifact with changed inputs:
+
+- [Web discovery](web/web-discover-61c838849072/events.jsonl): seven genuine model calls, verified success.
+- [Web-generated capability](web/web-discover-61c838849072/capability.json): reusable input references and provenance.
+- [Matching web replay](web/web-replay-78a3a22a3f17/events.jsonl): changed member/product/nickname, zero model calls.
+
+These web controls were operated by a computer-use assistant; they are not presented as a human
+demonstration. The separate dashboard screenshot in `docs/screenshots/` intentionally displays synthetic
+demo values as a presentation image. Engine evidence screenshots remain masked.
+
 All recorded browser interactions below happened against the running synthetic application. The
 planner and operator actors are explicitly scripted fixtures. The metadata does not claim they are
 an LLM or a person. Replay uses no model client.

@@ -1,0 +1,22 @@
+{"artifact_sha256": "ae2a7cacc4bdd421e90dfdc60c0574c1c3d3bf96a17e9278328508c9e3acc437", "at": "2026-10-08T08:31:03.585415+00:00", "event": "replay_started", "run_id": "web-replay-78a3a22a3f17", "seq": 1, "source": "llm_discovery"}
+{"at": "2026-10-08T08:31:03.611465+00:00", "event": "action_started", "op": "fill", "run_id": "web-replay-78a3a22a3f17", "screen": "Find a member", "seq": 2, "step": "step_001", "target": "Member ID", "target_kind": "label"}
+{"at": "2026-10-08T08:31:04.240532+00:00", "event": "action_completed", "op": "fill", "run_id": "web-replay-78a3a22a3f17", "seq": 3, "step": "step_001"}
+{"at": "2026-10-08T08:31:04.254931+00:00", "event": "checkpoint_verified", "run_id": "web-replay-78a3a22a3f17", "screen": "Find a member", "seq": 4, "step": "step_001"}
+{"at": "2026-10-08T08:31:04.265426+00:00", "event": "action_started", "op": "click", "run_id": "web-replay-78a3a22a3f17", "screen": "Find a member", "seq": 5, "step": "step_002", "target": "Search", "target_kind": "button"}
+{"at": "2026-10-08T08:31:04.914961+00:00", "event": "action_completed", "op": "click", "run_id": "web-replay-78a3a22a3f17", "seq": 6, "step": "step_002"}
+{"at": "2026-10-08T08:31:04.928533+00:00", "event": "checkpoint_verified", "run_id": "web-replay-78a3a22a3f17", "screen": "Member details", "seq": 7, "step": "step_002"}
+{"at": "2026-10-08T08:31:04.937477+00:00", "event": "action_started", "op": "click", "run_id": "web-replay-78a3a22a3f17", "screen": "Member details", "seq": 8, "step": "step_003", "target": "New sub-account", "target_kind": "visual"}
+{"at": "2026-10-08T08:31:05.673005+00:00", "event": "action_completed", "op": "click", "run_id": "web-replay-78a3a22a3f17", "seq": 9, "step": "step_003"}
+{"at": "2026-10-08T08:31:05.694122+00:00", "event": "checkpoint_verified", "run_id": "web-replay-78a3a22a3f17", "screen": "Prepare sub-account", "seq": 10, "step": "step_003"}
+{"at": "2026-10-08T08:31:05.711113+00:00", "event": "action_started", "op": "select", "run_id": "web-replay-78a3a22a3f17", "screen": "Prepare sub-account", "seq": 11, "step": "step_004", "target": "Product", "target_kind": "label"}
+{"at": "2026-10-08T08:31:06.322923+00:00", "event": "action_completed", "op": "select", "run_id": "web-replay-78a3a22a3f17", "seq": 12, "step": "step_004"}
+{"at": "2026-10-08T08:31:06.333268+00:00", "event": "checkpoint_verified", "run_id": "web-replay-78a3a22a3f17", "screen": "Prepare sub-account", "seq": 13, "step": "step_004"}
+{"at": "2026-10-08T08:31:06.340949+00:00", "event": "action_started", "op": "fill", "run_id": "web-replay-78a3a22a3f17", "screen": "Prepare sub-account", "seq": 14, "step": "step_005", "target": "Nickname", "target_kind": "label"}
+{"at": "2026-10-08T08:31:06.947831+00:00", "event": "action_completed", "op": "fill", "run_id": "web-replay-78a3a22a3f17", "seq": 15, "step": "step_005"}
+{"at": "2026-10-08T08:31:06.965153+00:00", "event": "checkpoint_verified", "run_id": "web-replay-78a3a22a3f17", "screen": "Prepare sub-account", "seq": 16, "step": "step_005"}
+{"at": "2026-10-08T08:31:06.975880+00:00", "event": "action_started", "op": "click", "run_id": "web-replay-78a3a22a3f17", "screen": "Prepare sub-account", "seq": 17, "step": "step_006", "target": "Review request", "target_kind": "button"}
+{"at": "2026-10-08T08:31:07.649492+00:00", "event": "action_completed", "op": "click", "run_id": "web-replay-78a3a22a3f17", "seq": 18, "step": "step_006"}
+{"at": "2026-10-08T08:31:07.670629+00:00", "event": "checkpoint_verified", "run_id": "web-replay-78a3a22a3f17", "screen": "Review sub-account", "seq": 19, "step": "step_006"}
+{"at": "2026-10-08T08:31:07.715757+00:00", "event": "success_verified", "run_id": "web-replay-78a3a22a3f17", "seq": 20}
+{"at": "2026-10-08T08:31:07.716058+00:00", "event": "run_finished", "human_interventions": 0, "model_calls": 0, "run_id": "web-replay-78a3a22a3f17", "seq": 21, "status": "success"}
+{"at": "2026-10-08T08:31:07.750719+00:00", "event": "evidence_captured", "evidence": "checkpoint-0021.png", "run_id": "web-replay-78a3a22a3f17", "seq": 22}
