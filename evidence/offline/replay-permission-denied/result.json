@@ -1,0 +1,15 @@
+{
+  "status": "failure",
+  "run_id": "replay-permission-denied",
+  "outputs": {},
+  "outcome": null,
+  "error": {
+    "code": "permission_denied",
+    "step": "step_002",
+    "expected": null,
+    "observed": null,
+    "evidence": "failure-0007.png"
+  },
+  "model_calls": 0,
+  "human_interventions": 0
+}

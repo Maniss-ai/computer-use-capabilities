@@ -1,0 +1,154 @@
+{
+  "recorded_at": "2026-10-08T07:22:08.521319+00:00",
+  "description": "Real model discovery followed by replay of its saved artifact with different inputs. Failed attempts are preserved, never counted as successful discovery.",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Darwin",
+    "playwright": "1.63.0"
+  },
+  "successful_discovery": "discover-2acef308bd9c",
+  "successful_replay": "replay-ac60b915dc4f",
+  "artifact_sha256": "59c0e18cb57e491ba3ccb44b363915c964c5fd768eb455f5a9a99e43d5e64827",
+  "changed_inputs": [
+    "member_id",
+    "product",
+    "nickname"
+  ],
+  "human_interventions_in_successful_runs": 0,
+  "recorded_discovery_request_count": 20,
+  "count_scope": "Requests counted by recorded workflow runs; does not include separate model catalog or diagnostic probes. Unknown usage from failed/timed-out requests is not estimated.",
+  "successful_discovery_usage": {
+    "input_tokens": 14904,
+    "output_tokens": 1256
+  },
+  "runs": [
+    {
+      "run": "discover-09bc7038ffd4",
+      "status": "failure",
+      "model_calls": 1,
+      "model": "gemini-3.8-flash",
+      "error": "model_service_unavailable",
+      "provider_responses": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "artifact_sha256": null
+    },
+    {
+      "run": "discover-12cd01d566e1",
+      "status": "failure",
+      "model_calls": 1,
+      "model": "gemini-3.8-flash",
+      "error": "model_timeout",
+      "provider_responses": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "artifact_sha256": null
+    },
+    {
+      "run": "discover-1b1981de5a5c",
+      "status": "failure",
+      "model_calls": 4,
+      "model": "gemini-3.1-flash-lite",
+      "error": "model_timeout",
+      "provider_responses": 3,
+      "input_tokens": 6031,
+      "output_tokens": 479,
+      "artifact_sha256": null
+    },
+    {
+      "run": "discover-2acef308bd9c",
+      "status": "success",
+      "model_calls": 7,
+      "model": "gemini-3.1-flash-lite",
+      "error": null,
+      "provider_responses": 7,
+      "input_tokens": 14904,
+      "output_tokens": 1256,
+      "artifact_sha256": "59c0e18cb57e491ba3ccb44b363915c964c5fd768eb455f5a9a99e43d5e64827"
+    },
+    {
+      "run": "discover-662816c36ae8",
+      "status": "failure",
+      "model_calls": 1,
+      "model": "gemini-3.1-flash-lite",
+      "error": "action_blocked",
+      "provider_responses": 1,
+      "input_tokens": 1903,
+      "output_tokens": 196,
+      "artifact_sha256": null
+    },
+    {
+      "run": "discover-78ff245e8692",
+      "status": "failure",
+      "model_calls": 1,
+      "model": "claude-sonnet-5-5",
+      "error": "model_request_failed",
+      "provider_responses": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "artifact_sha256": null
+    },
+    {
+      "run": "discover-b63653c99884",
+      "status": "failure",
+      "model_calls": 3,
+      "model": "gemini-3.1-flash-lite",
+      "error": "action_blocked",
+      "provider_responses": 3,
+      "input_tokens": 6031,
+      "output_tokens": 518,
+      "artifact_sha256": null
+    },
+    {
+      "run": "discover-c04a5bff8d6e",
+      "status": "failure",
+      "model_calls": 1,
+      "model": "gemini-3.7-flash",
+      "error": "model_service_unavailable",
+      "provider_responses": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "artifact_sha256": null
+    },
+    {
+      "run": "discover-ee1e855b7202",
+      "status": "failure",
+      "model_calls": 1,
+      "model": "gemini-2.5-flash",
+      "error": "model_not_found",
+      "provider_responses": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "artifact_sha256": null
+    },
+    {
+      "run": "replay-41f8f7b92019",
+      "status": "success",
+      "model_calls": 0,
+      "model": null,
+      "error": null,
+      "provider_responses": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "artifact_sha256": "59c0e18cb57e491ba3ccb44b363915c964c5fd768eb455f5a9a99e43d5e64827"
+    },
+    {
+      "run": "replay-ac60b915dc4f",
+      "status": "success",
+      "model_calls": 0,
+      "model": null,
+      "error": null,
+      "provider_responses": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "artifact_sha256": "59c0e18cb57e491ba3ccb44b363915c964c5fd768eb455f5a9a99e43d5e64827"
+    }
+  ],
+  "limitations": [
+    "One successful model discovery is not a reliability benchmark.",
+    "Earlier failures came from development versions; their logs are retained unmodified.",
+    "Anthropic billing rejection predates the specific model_billing_required classification.",
+    "The final CLI also captures successful-run screenshots; the first successful discovery predates that addition.",
+    "No raw model reasoning, credentials, or sensitive parameter values are persisted."
+  ]
+}

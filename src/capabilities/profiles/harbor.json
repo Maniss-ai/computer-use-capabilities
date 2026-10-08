@@ -1,0 +1,12 @@
+{
+  "origin": "http://127.0.0.1:8765",
+  "routes": ["/", "/workspace/search", "/workspace/member", "/workspace/new", "/workspace/review", "/workspace/restore", "/workspace/acknowledge", "/static/style.css", "/static/new-subaccount.png"],
+  "actions": [
+    {"screen": "Find a member", "op": "fill", "kind": "label", "name": "Member ID", "input_name": "member_id"},
+    {"screen": "Find a member", "op": "click", "kind": "button", "name": "Search"},
+    {"screen": "Member details", "op": "click", "kind": "visual", "name": "New sub-account"},
+    {"screen": "Prepare sub-account", "op": "select", "kind": "label", "name": "Product", "input_name": "product"},
+    {"screen": "Prepare sub-account", "op": "fill", "kind": "label", "name": "Nickname", "input_name": "nickname"},
+    {"screen": "Prepare sub-account", "op": "click", "kind": "button", "name": "Review request"}
+  ]
+}

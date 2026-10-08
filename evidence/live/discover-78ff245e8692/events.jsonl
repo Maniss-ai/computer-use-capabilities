@@ -1,0 +1,3 @@
+{"at": "2026-10-07T13:55:44.186778+00:00", "event": "discovery_started", "model": "claude-sonnet-5-5", "run_id": "discover-78ff245e8692", "seq": 1, "source": "llm_discovery"}
+{"at": "2026-10-07T13:55:45.998445+00:00", "event": "evidence_captured", "evidence": "failure-0001.png", "run_id": "discover-78ff245e8692", "seq": 2}
+{"at": "2026-10-07T13:55:45.998626+00:00", "event": "run_finished", "human_interventions": 0, "model_calls": 1, "run_id": "discover-78ff245e8692", "seq": 3, "status": "failure"}

@@ -1,0 +1,4 @@
+{"at": "2026-10-07T14:09:52.765763+00:00", "event": "discovery_started", "model": "gemini-2.5-flash", "run_id": "discover-ee1e855b7202", "seq": 1, "source": "llm_discovery"}
+{"at": "2026-10-07T14:09:53.380761+00:00", "code": "model_not_found", "event": "model_request_failed", "run_id": "discover-ee1e855b7202", "seq": 2}
+{"at": "2026-10-07T14:09:53.433619+00:00", "event": "evidence_captured", "evidence": "failure-0002.png", "run_id": "discover-ee1e855b7202", "seq": 3}
+{"at": "2026-10-07T14:09:53.433795+00:00", "event": "run_finished", "human_interventions": 0, "model_calls": 1, "run_id": "discover-ee1e855b7202", "seq": 4, "status": "failure"}

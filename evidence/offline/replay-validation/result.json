@@ -1,0 +1,9 @@
+{
+  "status": "business_outcome",
+  "run_id": "replay-validation",
+  "outputs": {},
+  "outcome": "validation_error",
+  "error": null,
+  "model_calls": 0,
+  "human_interventions": 0
+}

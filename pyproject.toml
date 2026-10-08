@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "computer-use-capabilities"
+version = "0.1.0"
+description = "Discover UI workflows with a model; replay reviewed, typed capabilities without one."
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+  "anthropic>=0.40,<1", "fastapi>=0.115,<1", "uvicorn>=0.32,<1",
+  "jinja2>=3.1,<4", "python-multipart>=0.0.18,<1", "pydantic>=2.10,<3",
+  "playwright>=1.49,<2", "opencv-python-headless>=4.10,<5",
+  "pillow>=11,<13", "numpy>=2,<3", "httpx>=0.28,<1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "pytest-asyncio>=0.24,<2", "pytest-cov>=6,<8", "ruff>=0.9,<1", "mypy>=1.14,<2"]
+
+[project.scripts]
+capabilities = "capabilities.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/capabilities"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = ["browser: launches a real Chromium browser"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ASYNC"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+packages = ["capabilities"]
+
+[[tool.mypy.overrides]]
+module = ["cv2.*"]
+ignore_missing_imports = true

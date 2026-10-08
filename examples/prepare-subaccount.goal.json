@@ -1,0 +1,21 @@
+{
+  "name": "prepare_subaccount_review",
+  "inputs": {
+    "member_id": {"description": "Synthetic five-digit member reference", "format": "member_id"},
+    "product": {"description": "Requested sub-account product", "choices": ["Savings", "Checking"], "sensitive": false},
+    "nickname": {"description": "User-chosen sub-account nickname"}
+  },
+  "outputs": {
+    "member_id": {"target": {"kind": "field", "name": "Member reference"}},
+    "product": {"target": {"kind": "field", "name": "Product"}, "sensitive": false},
+    "nickname": {"target": {"kind": "field", "name": "Nickname"}},
+    "review_ready": {"type": "boolean", "target": {"kind": "field", "name": "Status"}, "true_when": "Ready for review", "sensitive": false}
+  },
+  "success_screen": "Review sub-account",
+  "checks": [
+    {"target": {"kind": "field", "name": "Member reference"}, "equals": {"kind": "input", "name": "member_id"}},
+    {"target": {"kind": "field", "name": "Product"}, "equals": {"kind": "input", "name": "product"}},
+    {"target": {"kind": "field", "name": "Nickname"}, "equals": {"kind": "input", "name": "nickname"}},
+    {"target": {"kind": "field", "name": "Status"}, "equals": {"kind": "constant", "value": "Ready for review"}}
+  ]
+}

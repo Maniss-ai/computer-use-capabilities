@@ -1,0 +1,15 @@
+{
+  "status": "failure",
+  "run_id": "discover-12cd01d566e1",
+  "outputs": {},
+  "outcome": null,
+  "error": {
+    "code": "model_timeout",
+    "step": "step_001",
+    "expected": null,
+    "observed": null,
+    "evidence": "failure-0001.png"
+  },
+  "model_calls": 1,
+  "human_interventions": 0
+}

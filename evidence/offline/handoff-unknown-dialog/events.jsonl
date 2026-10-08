@@ -1,0 +1,30 @@
+{"artifact_sha256": "06952d36dc0fa2a2bf0bd6456a2cf4f6b5ca20cc66feede98042b539b1dbf20e", "at": "2026-10-07T12:36:40.211234+00:00", "event": "replay_started", "run_id": "handoff-unknown-dialog", "seq": 1, "source": "test_fixture"}
+{"at": "2026-10-07T12:36:40.225584+00:00", "event": "action_started", "op": "fill", "run_id": "handoff-unknown-dialog", "screen": "Find a member", "seq": 2, "step": "step_001", "target": "Member ID", "target_kind": "label"}
+{"at": "2026-10-07T12:36:40.252792+00:00", "event": "action_completed", "op": "fill", "run_id": "handoff-unknown-dialog", "seq": 3, "step": "step_001"}
+{"at": "2026-10-07T12:36:40.260592+00:00", "event": "checkpoint_verified", "run_id": "handoff-unknown-dialog", "screen": "Find a member", "seq": 4, "step": "step_001"}
+{"at": "2026-10-07T12:36:40.268238+00:00", "event": "action_started", "op": "click", "run_id": "handoff-unknown-dialog", "screen": "Find a member", "seq": 5, "step": "step_002", "target": "Search", "target_kind": "button"}
+{"at": "2026-10-07T12:36:40.312691+00:00", "event": "action_completed", "op": "click", "run_id": "handoff-unknown-dialog", "seq": 6, "step": "step_002"}
+{"at": "2026-10-07T12:36:40.357635+00:00", "code": "unknown_dialog", "event": "condition_detected", "run_id": "handoff-unknown-dialog", "seq": 7, "step": "step_002"}
+{"at": "2026-10-07T12:36:40.399360+00:00", "event": "evidence_captured", "evidence": "failure-0007.png", "run_id": "handoff-unknown-dialog", "seq": 8}
+{"at": "2026-10-07T12:36:40.399492+00:00", "code": "unknown_dialog", "epoch": 1, "event": "intervention_requested", "run_id": "handoff-unknown-dialog", "seq": 9, "step": "step_002"}
+{"at": "2026-10-07T12:36:40.399622+00:00", "event": "operator_simulation", "run_id": "handoff-unknown-dialog", "seq": 10, "source": "scripted_operator_not_a_human"}
+{"at": "2026-10-07T12:36:40.499770+00:00", "epoch": 2, "event": "control_transferred", "owner": "human", "run_id": "handoff-unknown-dialog", "seq": 11}
+{"at": "2026-10-07T12:36:40.517581+00:00", "epoch": 2, "event": "human_action", "manual_control": "Acknowledge notice", "manual_kind": "click", "run_id": "handoff-unknown-dialog", "seq": 12, "target_tag": "BUTTON"}
+{"at": "2026-10-07T12:36:40.566472+00:00", "epoch": 3, "event": "resume_requested", "owner": "checking", "run_id": "handoff-unknown-dialog", "seq": 13}
+{"at": "2026-10-07T12:36:40.578649+00:00", "epoch": 4, "event": "control_transferred", "owner": "automation", "run_id": "handoff-unknown-dialog", "seq": 14}
+{"at": "2026-10-07T12:36:40.584309+00:00", "event": "checkpoint_verified", "run_id": "handoff-unknown-dialog", "screen": "Member details", "seq": 15, "step": "step_002"}
+{"at": "2026-10-07T12:36:40.590563+00:00", "event": "action_started", "op": "click", "run_id": "handoff-unknown-dialog", "screen": "Member details", "seq": 16, "step": "step_003", "target": "New sub-account", "target_kind": "visual"}
+{"at": "2026-10-07T12:36:40.720487+00:00", "event": "action_completed", "op": "click", "run_id": "handoff-unknown-dialog", "seq": 17, "step": "step_003"}
+{"at": "2026-10-07T12:36:40.730746+00:00", "event": "checkpoint_verified", "run_id": "handoff-unknown-dialog", "screen": "Prepare sub-account", "seq": 18, "step": "step_003"}
+{"at": "2026-10-07T12:36:40.737904+00:00", "event": "action_started", "op": "select", "run_id": "handoff-unknown-dialog", "screen": "Prepare sub-account", "seq": 19, "step": "step_004", "target": "Product", "target_kind": "label"}
+{"at": "2026-10-07T12:36:40.742949+00:00", "event": "action_completed", "op": "select", "run_id": "handoff-unknown-dialog", "seq": 20, "step": "step_004"}
+{"at": "2026-10-07T12:36:40.749355+00:00", "event": "checkpoint_verified", "run_id": "handoff-unknown-dialog", "screen": "Prepare sub-account", "seq": 21, "step": "step_004"}
+{"at": "2026-10-07T12:36:40.755394+00:00", "event": "action_started", "op": "fill", "run_id": "handoff-unknown-dialog", "screen": "Prepare sub-account", "seq": 22, "step": "step_005", "target": "Nickname", "target_kind": "label"}
+{"at": "2026-10-07T12:36:40.759807+00:00", "event": "action_completed", "op": "fill", "run_id": "handoff-unknown-dialog", "seq": 23, "step": "step_005"}
+{"at": "2026-10-07T12:36:40.766613+00:00", "event": "checkpoint_verified", "run_id": "handoff-unknown-dialog", "screen": "Prepare sub-account", "seq": 24, "step": "step_005"}
+{"at": "2026-10-07T12:36:40.772831+00:00", "event": "action_started", "op": "click", "run_id": "handoff-unknown-dialog", "screen": "Prepare sub-account", "seq": 25, "step": "step_006", "target": "Review request", "target_kind": "button"}
+{"at": "2026-10-07T12:36:40.826856+00:00", "event": "action_completed", "op": "click", "run_id": "handoff-unknown-dialog", "seq": 26, "step": "step_006"}
+{"at": "2026-10-07T12:36:40.838588+00:00", "event": "checkpoint_verified", "run_id": "handoff-unknown-dialog", "screen": "Review sub-account", "seq": 27, "step": "step_006"}
+{"at": "2026-10-07T12:36:40.877416+00:00", "event": "success_verified", "run_id": "handoff-unknown-dialog", "seq": 28}
+{"at": "2026-10-07T12:36:40.877633+00:00", "event": "run_finished", "human_interventions": 1, "model_calls": 0, "run_id": "handoff-unknown-dialog", "seq": 29, "status": "success"}
+{"at": "2026-10-07T12:36:40.913300+00:00", "event": "evidence_captured", "evidence": "checkpoint-0029.png", "run_id": "handoff-unknown-dialog", "seq": 30}

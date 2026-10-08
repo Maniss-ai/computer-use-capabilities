@@ -1,0 +1,15 @@
+{
+  "status": "failure",
+  "run_id": "discover-662816c36ae8",
+  "outputs": {},
+  "outcome": null,
+  "error": {
+    "code": "action_blocked",
+    "step": "step_001",
+    "expected": null,
+    "observed": null,
+    "evidence": "failure-0003.png"
+  },
+  "model_calls": 1,
+  "human_interventions": 0
+}

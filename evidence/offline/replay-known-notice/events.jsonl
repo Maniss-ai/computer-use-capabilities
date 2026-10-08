@@ -1,0 +1,24 @@
+{"artifact_sha256": "06952d36dc0fa2a2bf0bd6456a2cf4f6b5ca20cc66feede98042b539b1dbf20e", "at": "2026-10-07T12:36:38.252733+00:00", "event": "replay_started", "run_id": "replay-known-notice", "seq": 1, "source": "test_fixture"}
+{"at": "2026-10-07T12:36:38.265508+00:00", "event": "action_started", "op": "fill", "run_id": "replay-known-notice", "screen": "Find a member", "seq": 2, "step": "step_001", "target": "Member ID", "target_kind": "label"}
+{"at": "2026-10-07T12:36:38.294627+00:00", "event": "action_completed", "op": "fill", "run_id": "replay-known-notice", "seq": 3, "step": "step_001"}
+{"at": "2026-10-07T12:36:38.303054+00:00", "event": "checkpoint_verified", "run_id": "replay-known-notice", "screen": "Find a member", "seq": 4, "step": "step_001"}
+{"at": "2026-10-07T12:36:38.310401+00:00", "event": "action_started", "op": "click", "run_id": "replay-known-notice", "screen": "Find a member", "seq": 5, "step": "step_002", "target": "Search", "target_kind": "button"}
+{"at": "2026-10-07T12:36:38.352902+00:00", "event": "action_completed", "op": "click", "run_id": "replay-known-notice", "seq": 6, "step": "step_002"}
+{"at": "2026-10-07T12:36:38.392307+00:00", "code": "known_notice", "event": "condition_detected", "run_id": "replay-known-notice", "seq": 7, "step": "step_002"}
+{"at": "2026-10-07T12:36:38.472912+00:00", "attempt": 1, "code": "known_notice", "event": "recovery_performed", "run_id": "replay-known-notice", "seq": 8}
+{"at": "2026-10-07T12:36:38.479562+00:00", "event": "checkpoint_verified", "run_id": "replay-known-notice", "screen": "Member details", "seq": 9, "step": "step_002"}
+{"at": "2026-10-07T12:36:38.487196+00:00", "event": "action_started", "op": "click", "run_id": "replay-known-notice", "screen": "Member details", "seq": 10, "step": "step_003", "target": "New sub-account", "target_kind": "visual"}
+{"at": "2026-10-07T12:36:38.612466+00:00", "event": "action_completed", "op": "click", "run_id": "replay-known-notice", "seq": 11, "step": "step_003"}
+{"at": "2026-10-07T12:36:38.623006+00:00", "event": "checkpoint_verified", "run_id": "replay-known-notice", "screen": "Prepare sub-account", "seq": 12, "step": "step_003"}
+{"at": "2026-10-07T12:36:38.629587+00:00", "event": "action_started", "op": "select", "run_id": "replay-known-notice", "screen": "Prepare sub-account", "seq": 13, "step": "step_004", "target": "Product", "target_kind": "label"}
+{"at": "2026-10-07T12:36:38.634558+00:00", "event": "action_completed", "op": "select", "run_id": "replay-known-notice", "seq": 14, "step": "step_004"}
+{"at": "2026-10-07T12:36:38.640965+00:00", "event": "checkpoint_verified", "run_id": "replay-known-notice", "screen": "Prepare sub-account", "seq": 15, "step": "step_004"}
+{"at": "2026-10-07T12:36:38.646647+00:00", "event": "action_started", "op": "fill", "run_id": "replay-known-notice", "screen": "Prepare sub-account", "seq": 16, "step": "step_005", "target": "Nickname", "target_kind": "label"}
+{"at": "2026-10-07T12:36:38.652327+00:00", "event": "action_completed", "op": "fill", "run_id": "replay-known-notice", "seq": 17, "step": "step_005"}
+{"at": "2026-10-07T12:36:38.658890+00:00", "event": "checkpoint_verified", "run_id": "replay-known-notice", "screen": "Prepare sub-account", "seq": 18, "step": "step_005"}
+{"at": "2026-10-07T12:36:38.664908+00:00", "event": "action_started", "op": "click", "run_id": "replay-known-notice", "screen": "Prepare sub-account", "seq": 19, "step": "step_006", "target": "Review request", "target_kind": "button"}
+{"at": "2026-10-07T12:36:38.717479+00:00", "event": "action_completed", "op": "click", "run_id": "replay-known-notice", "seq": 20, "step": "step_006"}
+{"at": "2026-10-07T12:36:38.727729+00:00", "event": "checkpoint_verified", "run_id": "replay-known-notice", "screen": "Review sub-account", "seq": 21, "step": "step_006"}
+{"at": "2026-10-07T12:36:38.766782+00:00", "event": "success_verified", "run_id": "replay-known-notice", "seq": 22}
+{"at": "2026-10-07T12:36:38.766999+00:00", "event": "run_finished", "human_interventions": 0, "model_calls": 0, "run_id": "replay-known-notice", "seq": 23, "status": "success"}
+{"at": "2026-10-07T12:36:38.804772+00:00", "event": "evidence_captured", "evidence": "checkpoint-0023.png", "run_id": "replay-known-notice", "seq": 24}

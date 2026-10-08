@@ -1,0 +1,22 @@
+{"artifact_sha256": "59c0e18cb57e491ba3ccb44b363915c964c5fd768eb455f5a9a99e43d5e64827", "at": "2026-10-08T07:20:24.279401+00:00", "event": "replay_started", "run_id": "replay-ac60b915dc4f", "seq": 1, "source": "llm_discovery"}
+{"at": "2026-10-08T07:20:24.308993+00:00", "event": "action_started", "op": "fill", "run_id": "replay-ac60b915dc4f", "screen": "Find a member", "seq": 2, "step": "step_001", "target": "Member ID", "target_kind": "label"}
+{"at": "2026-10-08T07:20:24.354618+00:00", "event": "action_completed", "op": "fill", "run_id": "replay-ac60b915dc4f", "seq": 3, "step": "step_001"}
+{"at": "2026-10-08T07:20:24.363036+00:00", "event": "checkpoint_verified", "run_id": "replay-ac60b915dc4f", "screen": "Find a member", "seq": 4, "step": "step_001"}
+{"at": "2026-10-08T07:20:24.371108+00:00", "event": "action_started", "op": "click", "run_id": "replay-ac60b915dc4f", "screen": "Find a member", "seq": 5, "step": "step_002", "target": "Search", "target_kind": "button"}
+{"at": "2026-10-08T07:20:24.427649+00:00", "event": "action_completed", "op": "click", "run_id": "replay-ac60b915dc4f", "seq": 6, "step": "step_002"}
+{"at": "2026-10-08T07:20:24.470070+00:00", "event": "checkpoint_verified", "run_id": "replay-ac60b915dc4f", "screen": "Member details", "seq": 7, "step": "step_002"}
+{"at": "2026-10-08T07:20:24.477192+00:00", "event": "action_started", "op": "click", "run_id": "replay-ac60b915dc4f", "screen": "Member details", "seq": 8, "step": "step_003", "target": "New sub-account", "target_kind": "visual"}
+{"at": "2026-10-08T07:20:24.634902+00:00", "event": "action_completed", "op": "click", "run_id": "replay-ac60b915dc4f", "seq": 9, "step": "step_003"}
+{"at": "2026-10-08T07:20:24.644932+00:00", "event": "checkpoint_verified", "run_id": "replay-ac60b915dc4f", "screen": "Prepare sub-account", "seq": 10, "step": "step_003"}
+{"at": "2026-10-08T07:20:24.651136+00:00", "event": "action_started", "op": "select", "run_id": "replay-ac60b915dc4f", "screen": "Prepare sub-account", "seq": 11, "step": "step_004", "target": "Product", "target_kind": "label"}
+{"at": "2026-10-08T07:20:24.656632+00:00", "event": "action_completed", "op": "select", "run_id": "replay-ac60b915dc4f", "seq": 12, "step": "step_004"}
+{"at": "2026-10-08T07:20:24.662732+00:00", "event": "checkpoint_verified", "run_id": "replay-ac60b915dc4f", "screen": "Prepare sub-account", "seq": 13, "step": "step_004"}
+{"at": "2026-10-08T07:20:24.668471+00:00", "event": "action_started", "op": "fill", "run_id": "replay-ac60b915dc4f", "screen": "Prepare sub-account", "seq": 14, "step": "step_005", "target": "Nickname", "target_kind": "label"}
+{"at": "2026-10-08T07:20:24.673038+00:00", "event": "action_completed", "op": "fill", "run_id": "replay-ac60b915dc4f", "seq": 15, "step": "step_005"}
+{"at": "2026-10-08T07:20:24.679656+00:00", "event": "checkpoint_verified", "run_id": "replay-ac60b915dc4f", "screen": "Prepare sub-account", "seq": 16, "step": "step_005"}
+{"at": "2026-10-08T07:20:24.686243+00:00", "event": "action_started", "op": "click", "run_id": "replay-ac60b915dc4f", "screen": "Prepare sub-account", "seq": 17, "step": "step_006", "target": "Review request", "target_kind": "button"}
+{"at": "2026-10-08T07:20:24.743774+00:00", "event": "action_completed", "op": "click", "run_id": "replay-ac60b915dc4f", "seq": 18, "step": "step_006"}
+{"at": "2026-10-08T07:20:24.753968+00:00", "event": "checkpoint_verified", "run_id": "replay-ac60b915dc4f", "screen": "Review sub-account", "seq": 19, "step": "step_006"}
+{"at": "2026-10-08T07:20:24.791600+00:00", "event": "success_verified", "run_id": "replay-ac60b915dc4f", "seq": 20}
+{"at": "2026-10-08T07:20:24.791803+00:00", "event": "run_finished", "human_interventions": 0, "model_calls": 0, "run_id": "replay-ac60b915dc4f", "seq": 21, "status": "success"}
+{"at": "2026-10-08T07:20:24.828926+00:00", "event": "evidence_captured", "evidence": "checkpoint-0021.png", "run_id": "replay-ac60b915dc4f", "seq": 22}

@@ -1,0 +1,8 @@
+{"artifact_sha256": "06952d36dc0fa2a2bf0bd6456a2cf4f6b5ca20cc66feede98042b539b1dbf20e", "at": "2026-10-07T12:36:35.114218+00:00", "event": "replay_started", "run_id": "replay-not-found", "seq": 1, "source": "test_fixture"}
+{"at": "2026-10-07T12:36:35.128965+00:00", "event": "action_started", "op": "fill", "run_id": "replay-not-found", "screen": "Find a member", "seq": 2, "step": "step_001", "target": "Member ID", "target_kind": "label"}
+{"at": "2026-10-07T12:36:35.159779+00:00", "event": "action_completed", "op": "fill", "run_id": "replay-not-found", "seq": 3, "step": "step_001"}
+{"at": "2026-10-07T12:36:35.169001+00:00", "event": "checkpoint_verified", "run_id": "replay-not-found", "screen": "Find a member", "seq": 4, "step": "step_001"}
+{"at": "2026-10-07T12:36:35.176578+00:00", "event": "action_started", "op": "click", "run_id": "replay-not-found", "screen": "Find a member", "seq": 5, "step": "step_002", "target": "Search", "target_kind": "button"}
+{"at": "2026-10-07T12:36:35.222648+00:00", "event": "action_completed", "op": "click", "run_id": "replay-not-found", "seq": 6, "step": "step_002"}
+{"at": "2026-10-07T12:36:35.265922+00:00", "code": "member_not_found", "event": "condition_detected", "run_id": "replay-not-found", "seq": 7, "step": "step_002"}
+{"at": "2026-10-07T12:36:35.266111+00:00", "event": "run_finished", "human_interventions": 0, "model_calls": 0, "run_id": "replay-not-found", "seq": 8, "status": "business_outcome"}

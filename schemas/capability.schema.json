@@ -1,0 +1,485 @@
+{
+  "$defs": {
+    "Check": {
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "$ref": "#/$defs/Target"
+        },
+        "equals": {
+          "discriminator": {
+            "mapping": {
+              "constant": "#/$defs/Constant",
+              "input": "#/$defs/InputRef"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/InputRef"
+            },
+            {
+              "$ref": "#/$defs/Constant"
+            }
+          ],
+          "title": "Equals"
+        }
+      },
+      "required": [
+        "target",
+        "equals"
+      ],
+      "title": "Check",
+      "type": "object"
+    },
+    "Click": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "click",
+          "default": "click",
+          "title": "Op",
+          "type": "string"
+        },
+        "target": {
+          "$ref": "#/$defs/Target"
+        }
+      },
+      "required": [
+        "target"
+      ],
+      "title": "Click",
+      "type": "object"
+    },
+    "Constant": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "constant",
+          "default": "constant",
+          "title": "Kind",
+          "type": "string"
+        },
+        "value": {
+          "maxLength": 200,
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "Constant",
+      "type": "object"
+    },
+    "Fill": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "fill",
+          "default": "fill",
+          "title": "Op",
+          "type": "string"
+        },
+        "target": {
+          "$ref": "#/$defs/Target"
+        },
+        "value": {
+          "discriminator": {
+            "mapping": {
+              "constant": "#/$defs/Constant",
+              "input": "#/$defs/InputRef"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/InputRef"
+            },
+            {
+              "$ref": "#/$defs/Constant"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "target",
+        "value"
+      ],
+      "title": "Fill",
+      "type": "object"
+    },
+    "GoalContract": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "pattern": "^[a-z][a-z0-9_]{0,63}$",
+          "title": "Name",
+          "type": "string"
+        },
+        "inputs": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Parameter"
+          },
+          "maxProperties": 20,
+          "minProperties": 1,
+          "title": "Inputs",
+          "type": "object"
+        },
+        "outputs": {
+          "additionalProperties": {
+            "$ref": "#/$defs/OutputField"
+          },
+          "maxProperties": 20,
+          "minProperties": 1,
+          "title": "Outputs",
+          "type": "object"
+        },
+        "success_screen": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Success Screen",
+          "type": "string"
+        },
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/Check"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Checks",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "inputs",
+        "outputs",
+        "success_screen",
+        "checks"
+      ],
+      "title": "GoalContract",
+      "type": "object"
+    },
+    "InputRef": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "input",
+          "default": "input",
+          "title": "Kind",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9_]{0,39}$",
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "InputRef",
+      "type": "object"
+    },
+    "OutputField": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "default": "string",
+          "enum": [
+            "string",
+            "boolean"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "target": {
+          "$ref": "#/$defs/Target"
+        },
+        "sensitive": {
+          "default": true,
+          "title": "Sensitive",
+          "type": "boolean"
+        },
+        "true_when": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "True When"
+        }
+      },
+      "required": [
+        "target"
+      ],
+      "title": "OutputField",
+      "type": "object"
+    },
+    "Parameter": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "string",
+          "default": "string",
+          "title": "Type",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 240,
+          "title": "Description",
+          "type": "string"
+        },
+        "format": {
+          "default": "text",
+          "enum": [
+            "text",
+            "member_id"
+          ],
+          "title": "Format",
+          "type": "string"
+        },
+        "choices": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Choices",
+          "type": "array"
+        },
+        "sensitive": {
+          "default": true,
+          "title": "Sensitive",
+          "type": "boolean"
+        },
+        "max_length": {
+          "default": 80,
+          "maximum": 200,
+          "minimum": 1,
+          "title": "Max Length",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "description"
+      ],
+      "title": "Parameter",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "enum": [
+            "llm_discovery",
+            "test_fixture",
+            "authored_example"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        }
+      },
+      "required": [
+        "source",
+        "run_id"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "Select": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "select",
+          "default": "select",
+          "title": "Op",
+          "type": "string"
+        },
+        "target": {
+          "$ref": "#/$defs/Target"
+        },
+        "value": {
+          "discriminator": {
+            "mapping": {
+              "constant": "#/$defs/Constant",
+              "input": "#/$defs/InputRef"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/InputRef"
+            },
+            {
+              "$ref": "#/$defs/Constant"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "target",
+        "value"
+      ],
+      "title": "Select",
+      "type": "object"
+    },
+    "Step": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^step_[0-9]{3}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "before": {
+          "maxLength": 100,
+          "title": "Before",
+          "type": "string"
+        },
+        "action": {
+          "discriminator": {
+            "mapping": {
+              "click": "#/$defs/Click",
+              "fill": "#/$defs/Fill",
+              "select": "#/$defs/Select"
+            },
+            "propertyName": "op"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Click"
+            },
+            {
+              "$ref": "#/$defs/Fill"
+            },
+            {
+              "$ref": "#/$defs/Select"
+            }
+          ],
+          "title": "Action"
+        },
+        "after": {
+          "maxLength": 100,
+          "title": "After",
+          "type": "string"
+        },
+        "timeout_ms": {
+          "default": 3000,
+          "maximum": 30000,
+          "minimum": 100,
+          "title": "Timeout Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "before",
+        "action",
+        "after"
+      ],
+      "title": "Step",
+      "type": "object"
+    },
+    "Target": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "label",
+            "button",
+            "link",
+            "text",
+            "field",
+            "visual"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "scope": {
+          "default": "workspace",
+          "pattern": "^[a-z][a-z0-9_-]{0,39}$",
+          "title": "Scope",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "name"
+      ],
+      "title": "Target",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "capability_version": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Capability Version",
+      "type": "string"
+    },
+    "profile": {
+      "default": "harbor-ledger/v1",
+      "pattern": "^[a-z][a-z0-9_-]+/v[0-9]+$",
+      "title": "Profile",
+      "type": "string"
+    },
+    "goal": {
+      "$ref": "#/$defs/GoalContract"
+    },
+    "steps": {
+      "items": {
+        "$ref": "#/$defs/Step"
+      },
+      "maxItems": 80,
+      "minItems": 1,
+      "title": "Steps",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "goal",
+    "steps",
+    "provenance"
+  ],
+  "title": "Capability",
+  "type": "object"
+}

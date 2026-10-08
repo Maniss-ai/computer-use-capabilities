@@ -1,0 +1,15 @@
+{
+  "status": "failure",
+  "run_id": "discover-ee1e855b7202",
+  "outputs": {},
+  "outcome": null,
+  "error": {
+    "code": "model_not_found",
+    "step": "step_001",
+    "expected": null,
+    "observed": "http_status_404",
+    "evidence": "failure-0002.png"
+  },
+  "model_calls": 1,
+  "human_interventions": 0
+}

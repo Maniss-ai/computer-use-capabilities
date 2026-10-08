@@ -1,0 +1,4 @@
+{"at": "2026-10-07T14:08:22.122987+00:00", "event": "discovery_started", "model": "gemini-3.8-flash", "run_id": "discover-09bc7038ffd4", "seq": 1, "source": "llm_discovery"}
+{"at": "2026-10-07T14:08:29.790039+00:00", "code": "model_service_unavailable", "event": "model_request_failed", "run_id": "discover-09bc7038ffd4", "seq": 2}
+{"at": "2026-10-07T14:08:29.837478+00:00", "event": "evidence_captured", "evidence": "failure-0002.png", "run_id": "discover-09bc7038ffd4", "seq": 3}
+{"at": "2026-10-07T14:08:29.837733+00:00", "event": "run_finished", "human_interventions": 0, "model_calls": 1, "run_id": "discover-09bc7038ffd4", "seq": 4, "status": "failure"}

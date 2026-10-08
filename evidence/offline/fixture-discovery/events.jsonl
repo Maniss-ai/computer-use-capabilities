@@ -1,0 +1,30 @@
+{"at": "2026-10-07T12:36:33.094069+00:00", "event": "discovery_started", "model": "scripted-test-double-not-an-llm", "run_id": "fixture-discovery", "seq": 1, "source": "test_fixture"}
+{"at": "2026-10-07T12:36:33.166432+00:00", "event": "decision", "reason": "advance", "run_id": "fixture-discovery", "seq": 2, "step": "step_001"}
+{"at": "2026-10-07T12:36:33.169237+00:00", "event": "action_started", "op": "fill", "run_id": "fixture-discovery", "screen": "Find a member", "seq": 3, "step": "step_001", "target": "Member ID", "target_kind": "label"}
+{"at": "2026-10-07T12:36:33.206035+00:00", "event": "action_completed", "op": "fill", "run_id": "fixture-discovery", "seq": 4, "step": "step_001"}
+{"at": "2026-10-07T12:36:33.214095+00:00", "event": "checkpoint_verified", "run_id": "fixture-discovery", "screen": "Find a member", "seq": 5, "step": "step_001"}
+{"at": "2026-10-07T12:36:33.275079+00:00", "event": "decision", "reason": "advance", "run_id": "fixture-discovery", "seq": 6, "step": "step_002"}
+{"at": "2026-10-07T12:36:33.278047+00:00", "event": "action_started", "op": "click", "run_id": "fixture-discovery", "screen": "Find a member", "seq": 7, "step": "step_002", "target": "Search", "target_kind": "button"}
+{"at": "2026-10-07T12:36:33.386141+00:00", "event": "action_completed", "op": "click", "run_id": "fixture-discovery", "seq": 8, "step": "step_002"}
+{"at": "2026-10-07T12:36:33.395323+00:00", "event": "checkpoint_verified", "run_id": "fixture-discovery", "screen": "Member details", "seq": 9, "step": "step_002"}
+{"at": "2026-10-07T12:36:33.424743+00:00", "event": "decision", "reason": "advance", "run_id": "fixture-discovery", "seq": 10, "step": "step_003"}
+{"at": "2026-10-07T12:36:33.427196+00:00", "event": "action_started", "op": "click", "run_id": "fixture-discovery", "screen": "Member details", "seq": 11, "step": "step_003", "target": "New sub-account", "target_kind": "visual"}
+{"at": "2026-10-07T12:36:33.571930+00:00", "event": "action_completed", "op": "click", "run_id": "fixture-discovery", "seq": 12, "step": "step_003"}
+{"at": "2026-10-07T12:36:33.581599+00:00", "event": "checkpoint_verified", "run_id": "fixture-discovery", "screen": "Prepare sub-account", "seq": 13, "step": "step_003"}
+{"at": "2026-10-07T12:36:33.624243+00:00", "event": "decision", "reason": "advance", "run_id": "fixture-discovery", "seq": 14, "step": "step_004"}
+{"at": "2026-10-07T12:36:33.626867+00:00", "event": "action_started", "op": "select", "run_id": "fixture-discovery", "screen": "Prepare sub-account", "seq": 15, "step": "step_004", "target": "Product", "target_kind": "label"}
+{"at": "2026-10-07T12:36:33.632947+00:00", "event": "action_completed", "op": "select", "run_id": "fixture-discovery", "seq": 16, "step": "step_004"}
+{"at": "2026-10-07T12:36:33.637656+00:00", "event": "checkpoint_verified", "run_id": "fixture-discovery", "screen": "Prepare sub-account", "seq": 17, "step": "step_004"}
+{"at": "2026-10-07T12:36:33.672683+00:00", "event": "decision", "reason": "advance", "run_id": "fixture-discovery", "seq": 18, "step": "step_005"}
+{"at": "2026-10-07T12:36:33.674769+00:00", "event": "action_started", "op": "fill", "run_id": "fixture-discovery", "screen": "Prepare sub-account", "seq": 19, "step": "step_005", "target": "Nickname", "target_kind": "label"}
+{"at": "2026-10-07T12:36:33.679363+00:00", "event": "action_completed", "op": "fill", "run_id": "fixture-discovery", "seq": 20, "step": "step_005"}
+{"at": "2026-10-07T12:36:33.684065+00:00", "event": "checkpoint_verified", "run_id": "fixture-discovery", "screen": "Prepare sub-account", "seq": 21, "step": "step_005"}
+{"at": "2026-10-07T12:36:33.723347+00:00", "event": "decision", "reason": "advance", "run_id": "fixture-discovery", "seq": 22, "step": "step_006"}
+{"at": "2026-10-07T12:36:33.726073+00:00", "event": "action_started", "op": "click", "run_id": "fixture-discovery", "screen": "Prepare sub-account", "seq": 23, "step": "step_006", "target": "Review request", "target_kind": "button"}
+{"at": "2026-10-07T12:36:33.789600+00:00", "event": "action_completed", "op": "click", "run_id": "fixture-discovery", "seq": 24, "step": "step_006"}
+{"at": "2026-10-07T12:36:33.798676+00:00", "event": "checkpoint_verified", "run_id": "fixture-discovery", "screen": "Review sub-account", "seq": 25, "step": "step_006"}
+{"at": "2026-10-07T12:36:33.839849+00:00", "event": "decision", "reason": "verify_goal", "run_id": "fixture-discovery", "seq": 26, "step": "step_007"}
+{"at": "2026-10-07T12:36:33.879241+00:00", "event": "success_verified", "run_id": "fixture-discovery", "seq": 27}
+{"artifact_sha256": "06952d36dc0fa2a2bf0bd6456a2cf4f6b5ca20cc66feede98042b539b1dbf20e", "at": "2026-10-07T12:36:33.879890+00:00", "event": "artifact_saved", "run_id": "fixture-discovery", "seq": 28}
+{"at": "2026-10-07T12:36:33.880017+00:00", "event": "run_finished", "human_interventions": 0, "model_calls": 0, "run_id": "fixture-discovery", "seq": 29, "status": "success"}
+{"at": "2026-10-07T12:36:33.906672+00:00", "event": "evidence_captured", "evidence": "checkpoint-0029.png", "run_id": "fixture-discovery", "seq": 30}

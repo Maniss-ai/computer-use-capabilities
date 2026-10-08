@@ -1,0 +1,186 @@
+{
+  "live_llm_discovery": false,
+  "human_operator": false,
+  "description": "Real UI execution; scripted planner and operator actors. Not live discovery evidence.",
+  "python": "3.12.14",
+  "platform": "Darwin",
+  "playwright": "1.63.0",
+  "cases": [
+    {
+      "run": "fixture-discovery",
+      "status": "success",
+      "outcome": null,
+      "error": null,
+      "model_calls": 0,
+      "human_interventions": 0,
+      "duration_ms": 1721
+    },
+    {
+      "run": "replay-success",
+      "status": "success",
+      "outcome": null,
+      "error": null,
+      "model_calls": 0,
+      "human_interventions": 0,
+      "duration_ms": 825
+    },
+    {
+      "run": "replay-not-found",
+      "status": "business_outcome",
+      "outcome": "member_not_found",
+      "error": null,
+      "model_calls": 0,
+      "human_interventions": 0,
+      "duration_ms": 497
+    },
+    {
+      "run": "replay-validation",
+      "status": "business_outcome",
+      "outcome": "validation_error",
+      "error": null,
+      "model_calls": 0,
+      "human_interventions": 0,
+      "duration_ms": 777
+    },
+    {
+      "run": "replay-permission-denied",
+      "status": "failure",
+      "outcome": null,
+      "error": "permission_denied",
+      "model_calls": 0,
+      "human_interventions": 0,
+      "duration_ms": 513
+    },
+    {
+      "run": "replay-slow",
+      "status": "success",
+      "outcome": null,
+      "error": null,
+      "model_calls": 0,
+      "human_interventions": 0,
+      "duration_ms": 1275
+    },
+    {
+      "run": "replay-known-notice",
+      "status": "success",
+      "outcome": null,
+      "error": null,
+      "model_calls": 0,
+      "human_interventions": 0,
+      "duration_ms": 909
+    },
+    {
+      "run": "handoff-expired-session",
+      "status": "success",
+      "outcome": null,
+      "error": null,
+      "model_calls": 0,
+      "human_interventions": 1,
+      "duration_ms": 1027
+    },
+    {
+      "run": "handoff-unknown-dialog",
+      "status": "success",
+      "outcome": null,
+      "error": null,
+      "model_calls": 0,
+      "human_interventions": 1,
+      "duration_ms": 1050
+    },
+    {
+      "run": "stability-01",
+      "status": "success",
+      "outcome": null,
+      "error": null,
+      "model_calls": 0,
+      "human_interventions": 0,
+      "duration_ms": 808
+    },
+    {
+      "run": "stability-02",
+      "status": "success",
+      "outcome": null,
+      "error": null,
+      "model_calls": 0,
+      "human_interventions": 0,
+      "duration_ms": 808
+    },
+    {
+      "run": "stability-03",
+      "status": "success",
+      "outcome": null,
+      "error": null,
+      "model_calls": 0,
+      "human_interventions": 0,
+      "duration_ms": 795
+    },
+    {
+      "run": "stability-04",
+      "status": "success",
+      "outcome": null,
+      "error": null,
+      "model_calls": 0,
+      "human_interventions": 0,
+      "duration_ms": 908
+    },
+    {
+      "run": "stability-05",
+      "status": "success",
+      "outcome": null,
+      "error": null,
+      "model_calls": 0,
+      "human_interventions": 0,
+      "duration_ms": 863
+    },
+    {
+      "run": "stability-06",
+      "status": "success",
+      "outcome": null,
+      "error": null,
+      "model_calls": 0,
+      "human_interventions": 0,
+      "duration_ms": 849
+    },
+    {
+      "run": "stability-07",
+      "status": "success",
+      "outcome": null,
+      "error": null,
+      "model_calls": 0,
+      "human_interventions": 0,
+      "duration_ms": 817
+    },
+    {
+      "run": "stability-08",
+      "status": "success",
+      "outcome": null,
+      "error": null,
+      "model_calls": 0,
+      "human_interventions": 0,
+      "duration_ms": 816
+    },
+    {
+      "run": "stability-09",
+      "status": "success",
+      "outcome": null,
+      "error": null,
+      "model_calls": 0,
+      "human_interventions": 0,
+      "duration_ms": 833
+    },
+    {
+      "run": "stability-10",
+      "status": "success",
+      "outcome": null,
+      "error": null,
+      "model_calls": 0,
+      "human_interventions": 0,
+      "duration_ms": 809
+    }
+  ],
+  "stability": {
+    "runs": 10,
+    "passed": 10,
+    "scope": "Same pinned browser and fixture; not a production reliability estimate"
+  }
+}

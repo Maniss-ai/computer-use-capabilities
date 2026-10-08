@@ -1,0 +1,15 @@
+{
+  "status": "failure",
+  "run_id": "discover-b63653c99884",
+  "outputs": {},
+  "outcome": null,
+  "error": {
+    "code": "action_blocked",
+    "step": "step_003",
+    "expected": null,
+    "observed": "no_matching_permission",
+    "evidence": "failure-0013.png"
+  },
+  "model_calls": 3,
+  "human_interventions": 0
+}

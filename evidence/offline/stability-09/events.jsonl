@@ -1,0 +1,22 @@
+{"artifact_sha256": "06952d36dc0fa2a2bf0bd6456a2cf4f6b5ca20cc66feede98042b539b1dbf20e", "at": "2026-10-07T12:36:48.072382+00:00", "event": "replay_started", "run_id": "stability-09", "seq": 1, "source": "test_fixture"}
+{"at": "2026-10-07T12:36:48.084283+00:00", "event": "action_started", "op": "fill", "run_id": "stability-09", "screen": "Find a member", "seq": 2, "step": "step_001", "target": "Member ID", "target_kind": "label"}
+{"at": "2026-10-07T12:36:48.114752+00:00", "event": "action_completed", "op": "fill", "run_id": "stability-09", "seq": 3, "step": "step_001"}
+{"at": "2026-10-07T12:36:48.123198+00:00", "event": "checkpoint_verified", "run_id": "stability-09", "screen": "Find a member", "seq": 4, "step": "step_001"}
+{"at": "2026-10-07T12:36:48.130500+00:00", "event": "action_started", "op": "click", "run_id": "stability-09", "screen": "Find a member", "seq": 5, "step": "step_002", "target": "Search", "target_kind": "button"}
+{"at": "2026-10-07T12:36:48.170402+00:00", "event": "action_completed", "op": "click", "run_id": "stability-09", "seq": 6, "step": "step_002"}
+{"at": "2026-10-07T12:36:48.216942+00:00", "event": "checkpoint_verified", "run_id": "stability-09", "screen": "Member details", "seq": 7, "step": "step_002"}
+{"at": "2026-10-07T12:36:48.223897+00:00", "event": "action_started", "op": "click", "run_id": "stability-09", "screen": "Member details", "seq": 8, "step": "step_003", "target": "New sub-account", "target_kind": "visual"}
+{"at": "2026-10-07T12:36:48.361886+00:00", "event": "action_completed", "op": "click", "run_id": "stability-09", "seq": 9, "step": "step_003"}
+{"at": "2026-10-07T12:36:48.372547+00:00", "event": "checkpoint_verified", "run_id": "stability-09", "screen": "Prepare sub-account", "seq": 10, "step": "step_003"}
+{"at": "2026-10-07T12:36:48.379901+00:00", "event": "action_started", "op": "select", "run_id": "stability-09", "screen": "Prepare sub-account", "seq": 11, "step": "step_004", "target": "Product", "target_kind": "label"}
+{"at": "2026-10-07T12:36:48.385887+00:00", "event": "action_completed", "op": "select", "run_id": "stability-09", "seq": 12, "step": "step_004"}
+{"at": "2026-10-07T12:36:48.392866+00:00", "event": "checkpoint_verified", "run_id": "stability-09", "screen": "Prepare sub-account", "seq": 13, "step": "step_004"}
+{"at": "2026-10-07T12:36:48.400303+00:00", "event": "action_started", "op": "fill", "run_id": "stability-09", "screen": "Prepare sub-account", "seq": 14, "step": "step_005", "target": "Nickname", "target_kind": "label"}
+{"at": "2026-10-07T12:36:48.405080+00:00", "event": "action_completed", "op": "fill", "run_id": "stability-09", "seq": 15, "step": "step_005"}
+{"at": "2026-10-07T12:36:48.411509+00:00", "event": "checkpoint_verified", "run_id": "stability-09", "screen": "Prepare sub-account", "seq": 16, "step": "step_005"}
+{"at": "2026-10-07T12:36:48.417786+00:00", "event": "action_started", "op": "click", "run_id": "stability-09", "screen": "Prepare sub-account", "seq": 17, "step": "step_006", "target": "Review request", "target_kind": "button"}
+{"at": "2026-10-07T12:36:48.468191+00:00", "event": "action_completed", "op": "click", "run_id": "stability-09", "seq": 18, "step": "step_006"}
+{"at": "2026-10-07T12:36:48.478392+00:00", "event": "checkpoint_verified", "run_id": "stability-09", "screen": "Review sub-account", "seq": 19, "step": "step_006"}
+{"at": "2026-10-07T12:36:48.518264+00:00", "event": "success_verified", "run_id": "stability-09", "seq": 20}
+{"at": "2026-10-07T12:36:48.518469+00:00", "event": "run_finished", "human_interventions": 0, "model_calls": 0, "run_id": "stability-09", "seq": 21, "status": "success"}
+{"at": "2026-10-07T12:36:48.554926+00:00", "event": "evidence_captured", "evidence": "checkpoint-0021.png", "run_id": "stability-09", "seq": 22}

@@ -1,0 +1,9 @@
+{
+  "status": "business_outcome",
+  "run_id": "replay-not-found",
+  "outputs": {},
+  "outcome": "member_not_found",
+  "error": null,
+  "model_calls": 0,
+  "human_interventions": 0
+}

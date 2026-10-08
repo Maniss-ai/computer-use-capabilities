@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "run_id": "stability-05",
+  "outputs": {
+    "member_id": "[REDACTED]",
+    "product": "Savings",
+    "nickname": "[REDACTED]",
+    "review_ready": true
+  },
+  "outcome": null,
+  "error": null,
+  "model_calls": 0,
+  "human_interventions": 0
+}

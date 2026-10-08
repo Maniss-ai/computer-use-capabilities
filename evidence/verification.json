@@ -1,0 +1,51 @@
+{
+  "verified_at": "2026-10-08T07:22:08.523840+00:00",
+  "scope": "Local implementation, genuine Gemini discovery, matching model-free replay, and clean wheel installation",
+  "acceptance": {
+    "command": "make verify",
+    "tests_passed": 85,
+    "tests_failed": 0,
+    "lint": "passed",
+    "format": "passed",
+    "strict_typing": "passed",
+    "offline_deliverables": "passed",
+    "test_elapsed_seconds": 28.24
+  },
+  "replay_stability": {
+    "runs": 10,
+    "passed": 10,
+    "scope": "Same pinned browser and fixture; not a production reliability estimate"
+  },
+  "operator_webpage_integration": "passed with a scripted operator using the real UI and same live target session",
+  "clean_install": {
+    "mode": "non-editable wheel in a new virtual environment",
+    "result": "passed",
+    "packaged_cli_replay_outside_checkout": "passed"
+  },
+  "model_api_calls": 20,
+  "live_discovery": {
+    "run_id": "discover-2acef308bd9c",
+    "status": "success",
+    "provider": "gemini",
+    "model": "gemini-3.1-flash-lite",
+    "model_calls": 7
+  },
+  "submission_gate": "passed: genuine discovery and zero-model replay of the same artifact hash",
+  "github_actions": {
+    "workflow": ".github/workflows/ci.yml",
+    "results_url": "https://github.com/Maniss-ai/computer-use-capabilities/actions",
+    "scope": "Remote CI results are reported by GitHub, separately from these local measurements."
+  },
+  "public_repository": "https://github.com/Maniss-ai/computer-use-capabilities",
+  "model_api_call_scope": "Requests counted by recorded workflow runs; does not include separate model catalog or diagnostic probes. Unknown usage from failed/timed-out requests is not estimated.",
+  "live_artifact_replay": {
+    "run_id": "replay-ac60b915dc4f",
+    "status": "success",
+    "model_calls": 0,
+    "changed_inputs": [
+      "member_id",
+      "product",
+      "nickname"
+    ]
+  }
+}
