@@ -55,6 +55,13 @@ sub-account artifact is genuine live evidence. New artifacts remain local under 
 in the workflow's capability list after success. Creating another artifact for the same goal does not
 create another business workflow. The live evidence index distinguishes genuine and fixture runs.
 
+If the local server restarts while the dashboard is open, it reconnects automatically and preserves
+your selected workflow and form inputs. The old live browser session and in-memory recent history
+end on restart; saved capabilities and disk evidence remain available. A rejected start displays
+**Not started** with its error, rather than staying at **Starting**. Connection failures are not
+automatically resubmitted: check Recent runs before starting again. After updating the dashboard code,
+refresh an existing tab once to load the new JavaScript.
+
 ## Example records and negative tests
 
 | Member | Card | Transaction | Statement account | Fee |

@@ -1,0 +1,328 @@
+{
+  "schema_version": "1.0",
+  "capability_version": "1.0.0",
+  "profile": "harbor-ledger/v1",
+  "goal": {
+    "name": "prepare_card_replacement_review",
+    "inputs": {
+      "member_id": {
+        "type": "string",
+        "description": "Synthetic five-digit member reference",
+        "format": "member_id",
+        "choices": [],
+        "sensitive": true,
+        "max_length": 80
+      },
+      "card_reference": {
+        "type": "string",
+        "description": "Card reference",
+        "format": "text",
+        "choices": [],
+        "sensitive": true,
+        "max_length": 80
+      },
+      "replacement_reason": {
+        "type": "string",
+        "description": "Replacement reason",
+        "format": "text",
+        "choices": [
+          "Damaged",
+          "Lost",
+          "Stolen"
+        ],
+        "sensitive": false,
+        "max_length": 80
+      },
+      "replacement_delivery": {
+        "type": "string",
+        "description": "Replacement delivery",
+        "format": "text",
+        "choices": [
+          "Branch pickup",
+          "Registered address"
+        ],
+        "sensitive": false,
+        "max_length": 80
+      }
+    },
+    "outputs": {
+      "member_id": {
+        "type": "string",
+        "target": {
+          "kind": "field",
+          "name": "Member reference",
+          "scope": "workspace"
+        },
+        "sensitive": true,
+        "true_when": null
+      },
+      "card_reference": {
+        "type": "string",
+        "target": {
+          "kind": "field",
+          "name": "Card reference",
+          "scope": "workspace"
+        },
+        "sensitive": true,
+        "true_when": null
+      },
+      "replacement_reason": {
+        "type": "string",
+        "target": {
+          "kind": "field",
+          "name": "Replacement reason",
+          "scope": "workspace"
+        },
+        "sensitive": false,
+        "true_when": null
+      },
+      "replacement_delivery": {
+        "type": "string",
+        "target": {
+          "kind": "field",
+          "name": "Replacement delivery",
+          "scope": "workspace"
+        },
+        "sensitive": false,
+        "true_when": null
+      },
+      "card_product": {
+        "type": "string",
+        "target": {
+          "kind": "field",
+          "name": "Card product",
+          "scope": "workspace"
+        },
+        "sensitive": true,
+        "true_when": null
+      },
+      "card_standing": {
+        "type": "string",
+        "target": {
+          "kind": "field",
+          "name": "Card standing",
+          "scope": "workspace"
+        },
+        "sensitive": true,
+        "true_when": null
+      },
+      "review_ready": {
+        "type": "boolean",
+        "target": {
+          "kind": "field",
+          "name": "Status",
+          "scope": "workspace"
+        },
+        "sensitive": false,
+        "true_when": "Ready for review"
+      }
+    },
+    "success_screen": "Review card replacement",
+    "checks": [
+      {
+        "target": {
+          "kind": "field",
+          "name": "Member reference",
+          "scope": "workspace"
+        },
+        "equals": {
+          "kind": "input",
+          "name": "member_id"
+        }
+      },
+      {
+        "target": {
+          "kind": "field",
+          "name": "Card reference",
+          "scope": "workspace"
+        },
+        "equals": {
+          "kind": "input",
+          "name": "card_reference"
+        }
+      },
+      {
+        "target": {
+          "kind": "field",
+          "name": "Replacement reason",
+          "scope": "workspace"
+        },
+        "equals": {
+          "kind": "input",
+          "name": "replacement_reason"
+        }
+      },
+      {
+        "target": {
+          "kind": "field",
+          "name": "Replacement delivery",
+          "scope": "workspace"
+        },
+        "equals": {
+          "kind": "input",
+          "name": "replacement_delivery"
+        }
+      },
+      {
+        "target": {
+          "kind": "field",
+          "name": "Status",
+          "scope": "workspace"
+        },
+        "equals": {
+          "kind": "constant",
+          "value": "Ready for review"
+        }
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "step_001",
+      "before": "Find a member",
+      "action": {
+        "op": "fill",
+        "target": {
+          "kind": "label",
+          "name": "Member ID",
+          "scope": "workspace"
+        },
+        "value": {
+          "kind": "input",
+          "name": "member_id"
+        }
+      },
+      "after": "Find a member",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_002",
+      "before": "Find a member",
+      "action": {
+        "op": "click",
+        "target": {
+          "kind": "button",
+          "name": "Search",
+          "scope": "workspace"
+        }
+      },
+      "after": "Member details",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_003",
+      "before": "Member details",
+      "action": {
+        "op": "click",
+        "target": {
+          "kind": "button",
+          "name": "Card services",
+          "scope": "workspace"
+        }
+      },
+      "after": "Card services",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_004",
+      "before": "Card services",
+      "action": {
+        "op": "fill",
+        "target": {
+          "kind": "label",
+          "name": "Card reference",
+          "scope": "workspace"
+        },
+        "value": {
+          "kind": "input",
+          "name": "card_reference"
+        }
+      },
+      "after": "Card services",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_005",
+      "before": "Card services",
+      "action": {
+        "op": "click",
+        "target": {
+          "kind": "button",
+          "name": "Find record",
+          "scope": "workspace"
+        }
+      },
+      "after": "Card details",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_006",
+      "before": "Card details",
+      "action": {
+        "op": "click",
+        "target": {
+          "kind": "button",
+          "name": "Prepare replacement",
+          "scope": "workspace"
+        }
+      },
+      "after": "Replacement preferences",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_007",
+      "before": "Replacement preferences",
+      "action": {
+        "op": "select",
+        "target": {
+          "kind": "label",
+          "name": "Replacement reason",
+          "scope": "workspace"
+        },
+        "value": {
+          "kind": "input",
+          "name": "replacement_reason"
+        }
+      },
+      "after": "Replacement preferences",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_008",
+      "before": "Replacement preferences",
+      "action": {
+        "op": "select",
+        "target": {
+          "kind": "label",
+          "name": "Replacement delivery",
+          "scope": "workspace"
+        },
+        "value": {
+          "kind": "input",
+          "name": "replacement_delivery"
+        }
+      },
+      "after": "Replacement preferences",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_009",
+      "before": "Replacement preferences",
+      "action": {
+        "op": "click",
+        "target": {
+          "kind": "button",
+          "name": "Review request",
+          "scope": "workspace"
+        }
+      },
+      "after": "Review card replacement",
+      "timeout_ms": 3000
+    }
+  ],
+  "provenance": {
+    "source": "llm_discovery",
+    "run_id": "web-discover-c9d6de363113",
+    "model": "gemini-3.1-flash-lite"
+  }
+}

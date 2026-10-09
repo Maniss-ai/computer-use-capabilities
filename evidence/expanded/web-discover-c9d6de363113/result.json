@@ -1,0 +1,17 @@
+{
+  "status": "success",
+  "run_id": "web-discover-c9d6de363113",
+  "outputs": {
+    "member_id": "[REDACTED]",
+    "card_reference": "[REDACTED]",
+    "replacement_reason": "Damaged",
+    "replacement_delivery": "Branch pickup",
+    "card_product": "[REDACTED]",
+    "card_standing": "[REDACTED]",
+    "review_ready": true
+  },
+  "outcome": null,
+  "error": null,
+  "model_calls": 10,
+  "human_interventions": 0
+}

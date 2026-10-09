@@ -5,9 +5,9 @@
 A computer-use backend and web console for six workflows in a synthetic legacy banking application: real browser actions,
 versioned capabilities, deterministic replay, policy enforcement, and human control of the same live session.
 
-> **Verified:** **109 tests pass**, including real-browser coverage of all six goals. Genuine Gemini
-> discovery and matching **zero-model replay** are recorded for sub-account review and transaction
-> disputes. Four other goals are ready for discovery but have no successful live-model evidence yet.
+> **Verified:** **115 tests pass**, including real-browser coverage of all six goals. Genuine Gemini
+> discovery and matching **zero-model replay** are recorded for sub-account review, transaction
+> disputes, and card replacement. Three other goals are ready for discovery but have no successful live-model evidence yet.
 > Inspect the [evidence index](evidence/README.md), [workflow guide](docs/BANKING_WORKFLOWS.md), and [report](REPORT.md).
 
 ![Capability Studio showing a completed replay against the synthetic banking UI](docs/screenshots/banking-workflows.png)
@@ -279,6 +279,8 @@ flowchart LR
   pinned Playwright build is recommended for reproducibility.
 - The dashboard binds to loopback, permits one active run, and retains the latest 20 run views in memory.
   Run history and live previews reset on restart; capability JSON and masked disk evidence persist.
+  Open pages renew their session token automatically and preserve form inputs. Requests rejected for
+  an expired token retry once; network failures never automatically repeat a mutation.
   This is a local control panel, with origin/CSRF checks and no remote multi-user authentication.
 - Keep real credentials and customer data out of this demonstration. Production redaction, identity,
   retention controls, remote session isolation, and vendor qualification require further work.

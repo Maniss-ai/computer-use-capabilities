@@ -1,15 +1,15 @@
 {
-  "verified_at": "2026-10-09T08:00:20.031275+00:00",
-  "scope": "Six local servicing workflows, real-browser regression tests, genuine dispute discovery and matching replay, and packaged CLI replay outside checkout",
+  "verified_at": "2026-10-09T14:05:19.843548+00:00",
+  "scope": "Six local servicing workflows, dashboard session recovery, real-browser regression tests, genuine dispute and card discovery/replay, and packaged CLI dispute replay outside checkout",
   "acceptance": {
     "command": "make verify",
-    "tests_passed": 109,
+    "tests_passed": 115,
     "tests_failed": 0,
     "lint": "passed",
     "format": "passed",
     "strict_typing": "passed",
     "offline_deliverables": "passed",
-    "test_elapsed_seconds": 102.25
+    "test_elapsed_seconds": 115.65
   },
   "replay_stability": {
     "runs": 10,
@@ -24,7 +24,7 @@
     "dashboard_assets_and_catalog_outside_checkout": "passed",
     "six_workflow_wheel_replay_outside_checkout": "passed: transaction dispute; zero model calls"
   },
-  "model_api_calls": 40,
+  "model_api_calls": 50,
   "live_discovery": {
     "run_id": "discover-2acef308bd9c",
     "status": "success",
@@ -68,6 +68,27 @@
     "discovery_model_calls": 10,
     "replay_model_calls": 0,
     "provider_failures": "Two address discovery attempts stopped on model_service_unavailable. See expanded/manifest.json.",
-    "new_tests": 18
+    "new_tests": 18,
+    "card_replacement": {
+      "discovery": "evidence/expanded/web-discover-c9d6de363113",
+      "replay": "evidence/expanded/web-replay-5f0499f4f5ad",
+      "discovery_model_calls": 10,
+      "replay_model_calls": 0,
+      "discovery_seconds": 135.2,
+      "replay_seconds": 7.2
+    }
+  },
+  "dashboard_session_recovery": {
+    "regression_cases": 6,
+    "checks": [
+      "expired page and rejected start reconnect safely",
+      "one accepted run after token renewal",
+      "workflow and inputs retained when run history resets",
+      "no mutation retry on network, validation, or origin failure",
+      "token retry bounded to once",
+      "failed start no longer stays at Starting"
+    ],
+    "manual_restart": "verified: same open tab recovered after local server restart without reload",
+    "replay_after_fix": "web-replay-f98fafc15718: success; 9 actions; zero model calls"
   }
 }

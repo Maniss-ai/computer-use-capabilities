@@ -1,6 +1,8 @@
 "use strict";
 const $ = (id) => document.getElementById(id);
-const csrf = document.querySelector('meta[name="studio-csrf"]').content;
+let csrf = document.querySelector('meta[name="studio-csrf"]').content;
+let reconnecting = null,
+  catalogStale = false;
 let mode = "replay",
   catalog = [],
   workflows = [],
@@ -19,21 +21,61 @@ const statusLabels = {
   failure: "Stopped",
 };
 
-async function api(path, body) {
+async function reconnect(sentToken) {
+  if (csrf !== sentToken) return;
+  if (!reconnecting) {
+    reconnecting = (async () => {
+      const response = await fetch("/", {
+        cache: "no-store",
+        redirect: "error",
+      });
+      if (!response.ok)
+        throw new Error("Could not reconnect. Refresh the dashboard.");
+      const page = new DOMParser().parseFromString(
+        await response.text(),
+        "text/html",
+      );
+      const token = page.querySelector('meta[name="studio-csrf"]')?.content;
+      if (!token)
+        throw new Error("Could not reconnect. Refresh the dashboard.");
+      csrf = token;
+      catalogStale = true;
+    })().finally(() => {
+      reconnecting = null;
+    });
+  }
+  await reconnecting;
+}
+async function request(path, body, retry = true) {
+  const sentToken = csrf;
   const response = await fetch("/api" + path, {
     method: body === undefined ? "GET" : "POST",
     headers: {
-      "X-Studio-CSRF": csrf,
+      "X-Studio-CSRF": sentToken,
       ...(body === undefined ? {} : { "Content-Type": "application/json" }),
     },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
+  const code = response.headers.get("X-Studio-Error");
+  // Retry once, only when the server confirms rejection before execution.
+  // Network failures and other 403s must never replay a mutation implicitly.
+  if (retry && response.status === 403 && code === "stale-session") {
+    await reconnect(sentToken);
+    return request(path, body, false);
+  }
   if (!response.ok) {
     const data = await response.json().catch(() => ({}));
-    throw new Error(
+    const failure = new Error(
       data.detail || "The dashboard could not complete that request.",
     );
+    failure.status = response.status;
+    failure.code = code;
+    throw failure;
   }
+  return response;
+}
+async function api(path, body) {
+  const response = await request(path, body);
   return response.status === 204 ? null : response.json();
 }
 function error(message = "") {
@@ -176,6 +218,7 @@ function changeWorkflow() {
 }
 async function loadCatalog(preferRunId = null) {
   const data = await api("/catalog");
+  catalogStale = false;
   catalog = data.capabilities;
   workflows = data.workflows;
   providers = data.providers;
@@ -398,11 +441,9 @@ function renderState(state) {
 }
 async function preview(state) {
   if (state.frame === lastFrame) return;
-  lastFrame = state.frame;
-  const response = await fetch(`/api/runs/${state.id}/preview`, {
-    headers: { "X-Studio-CSRF": csrf },
-  });
+  const response = await request(`/runs/${state.id}/preview`);
   if (state.id !== activeId) return;
+  lastFrame = state.frame;
   if (response.status === 204) {
     $("browser-image").hidden = true;
     $("empty-state").hidden = false;
@@ -414,7 +455,6 @@ async function preview(state) {
       "The activity log shows the current run state. Unknown or unavailable screens are not displayed.";
     return;
   }
-  if (!response.ok) return;
   const next = URL.createObjectURL(await response.blob());
   if (state.id !== activeId) {
     URL.revokeObjectURL(next);
@@ -451,14 +491,52 @@ async function history() {
   );
   return runs;
 }
+function clearRun(status, title, message) {
+  activeId = null;
+  current = null;
+  lastFrame = -1;
+  if (imageUrl) URL.revokeObjectURL(imageUrl);
+  imageUrl = null;
+  $("browser-image").hidden = true;
+  $("browser-image").removeAttribute("src");
+  $("empty-state").hidden = false;
+  $("empty-state").querySelector("h2").textContent = title;
+  $("empty-state").querySelector("p").textContent = message;
+  $("run-status").textContent = status;
+  $("run-status").className = "";
+  $("action-count").textContent = "0";
+  $("model-count").textContent = "0";
+  $("elapsed").textContent = "0.0s";
+  $("screen-name").textContent = "No active session";
+  $("live-status").textContent = "Waiting for a run";
+  for (const id of ["stop", "takeover", "human-tools"]) $(id).hidden = true;
+  $("viewport").classList.remove("human");
+  renderResult(null);
+  renderEvents([]);
+  $("start").disabled = !canStart();
+}
 async function refresh() {
   if (refreshing) return;
   refreshing = true;
   try {
     if (activeId) {
       const id = activeId;
-      const state = await api("/runs/" + id);
-      if (id === activeId) {
+      let state;
+      try {
+        state = await api("/runs/" + id);
+      } catch (e) {
+        if (e.code !== "run-not-found") throw e;
+        if (id === activeId) {
+          clearRun(
+            "Ready",
+            "Dashboard reconnected",
+            "The server restarted and the previous live session ended. Your inputs and saved capabilities are still available. Start a new run when ready.",
+          );
+          catalogStale = true;
+          error();
+        }
+      }
+      if (state && id === activeId) {
         const finished =
           isActive() && !["starting", "running"].includes(state.status);
         renderState(state);
@@ -469,7 +547,16 @@ async function refresh() {
         }
       }
     }
-    await history();
+    if (catalogStale) await loadCatalog();
+    const runs = await history();
+    // A start request may have succeeded even if its response was lost.
+    // Reattach to an active server run instead of resubmitting that request.
+    if (!activeId && !starting) {
+      const running = runs.find((run) =>
+        ["starting", "running"].includes(run.status),
+      );
+      if (running) activeId = running.id;
+    }
   } catch (e) {
     error(e.message);
   } finally {
@@ -480,21 +567,13 @@ $("run-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   if (starting || isActive()) return;
   starting = true;
-  activeId = null;
-  current = null;
-  $("run-status").textContent = "Starting";
-  $("run-status").className = "";
-  $("action-count").textContent = "0";
-  $("model-count").textContent = "0";
-  $("elapsed").textContent = "0.0s";
-  $("browser-image").hidden = true;
-  $("empty-state").hidden = false;
-  $("empty-state").querySelector("h2").textContent =
-    "Opening the banking session…";
-  renderResult(null);
-  renderEvents([]);
-  $("start").disabled = true;
+  clearRun(
+    "Starting",
+    "Opening the banking session…",
+    "The engine is starting a new banking session.",
+  );
   error();
+  let accepted = false;
   try {
     const state = await api("/runs", {
       mode,
@@ -504,6 +583,7 @@ $("run-form").addEventListener("submit", async (event) => {
       inputs: Object.fromEntries(new FormData($("run-form"))),
       scenario: $("scenario").value,
     });
+    accepted = true;
     activeId = state.id;
     lastFrame = -1;
     renderState(state);
@@ -511,6 +591,15 @@ $("run-form").addEventListener("submit", async (event) => {
     await preview(state);
     await history();
   } catch (e) {
+    if (!accepted) {
+      clearRun(
+        e.status ? "Not started" : "Connection lost",
+        "Could not confirm a new run",
+        e.status
+          ? e.message
+          : "Check Recent runs before trying again. The start request was not automatically repeated.",
+      );
+    }
     error(e.message);
   } finally {
     starting = false;

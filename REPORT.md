@@ -131,7 +131,7 @@ and automatic cross-tenant specialization are omitted. Crash recovery closes the
 than pretending an in-memory session can be reconstructed. There is no autonomous LLM fallback on replay.
 
 Repeated-run stability and multiple servicing workflows are demonstrated. The genuine discovery/replay evidence and
-submission gate pass; 109 local tests cover the execution and control boundaries. Next steps are a
-manual desktop handoff recording, vendor/profile qualification, and an approval registry. Live model evidence covers sub-account and dispute review; four other goals have only fixture-planner
+submission gate pass; 115 local tests cover the execution and control boundaries. Next steps are a
+manual desktop handoff recording, vendor/profile qualification, and an approval registry. Live model evidence covers sub-account, dispute, and card review; three other goals have only fixture-planner
 browser validation. Two expanded address-discovery attempts stopped on provider unavailability.
 Failures are retained; the successful runs are not a discovery reliability benchmark.

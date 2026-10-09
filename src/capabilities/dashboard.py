@@ -355,18 +355,28 @@ def create_dashboard_app(origin: str, bank_origin: str, root: Path) -> FastAPI:
         return (PACKAGE / "web_static/index.html").read_text().replace("{{csrf}}", csrf)
 
     async def authorized(request: Request) -> None:
-        if not secrets.compare_digest(request.headers.get("x-studio-csrf", ""), csrf):
-            raise HTTPException(403, "Open the local dashboard to control this session.")
         if request.method != "GET" and request.headers.get("origin") != origin:
             raise HTTPException(403, "Dashboard origin required")
         if request.headers.get("origin") not in {None, origin}:
             raise HTTPException(403, "Dashboard origin required")
+        if not secrets.compare_digest(request.headers.get("x-studio-csrf", ""), csrf):
+            # No handler has run. Only this rejection is safe for the UI to retry
+            # after reading a fresh token from the same-origin dashboard page.
+            raise HTTPException(
+                403,
+                "The dashboard session expired. Refresh the page to reconnect.",
+                headers={"X-Studio-Error": "stale-session"},
+            )
 
     api = APIRouter(prefix="/api", dependencies=[Depends(authorized)])
 
     def get_run(run_id: str) -> WebRun:
         if run_id not in manager.runs:
-            raise HTTPException(404, "Run not found. The dashboard may have restarted.")
+            raise HTTPException(
+                404,
+                "Run not found. The dashboard may have restarted.",
+                headers={"X-Studio-Error": "run-not-found"},
+            )
         return manager.runs[run_id]
 
     @api.get("/catalog")

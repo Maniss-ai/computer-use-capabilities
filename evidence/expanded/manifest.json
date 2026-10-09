@@ -3,7 +3,8 @@
   "operator": "Computer-use assistant initiated dashboard runs.",
   "live_verified_workflows": [
     "subaccount (original evidence)",
-    "transaction-dispute"
+    "transaction-dispute",
+    "card-replacement"
   ],
   "fixture_browser_verified_workflows": [
     "subaccount",
@@ -57,7 +58,23 @@
       },
       "model_responses": 1,
       "ui_actions": 1
+    },
+    {
+      "id": "web-discover-c9d6de363113",
+      "status": "success",
+      "model_calls": 10,
+      "error": null,
+      "model_responses": 10,
+      "ui_actions": 9
+    },
+    {
+      "id": "web-replay-5f0499f4f5ad",
+      "status": "success",
+      "model_calls": 0,
+      "error": null,
+      "model_responses": 0,
+      "ui_actions": 9
     }
   ],
-  "limitation": "Address-change live verification stopped on provider HTTP 503 in two separate attempts; no address capability was published. Four new workflows remain without successful genuine model evidence. No fallback provider or billing change was used."
+  "limitation": "Address-change live verification stopped on provider HTTP 503 in two separate attempts; no address capability was published. Three new workflows remain without successful genuine model evidence. No fallback provider or billing change was used."
 }

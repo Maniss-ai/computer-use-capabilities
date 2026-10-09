@@ -48,10 +48,17 @@ async def wait_run(manager, run_id, *, owner=None):
 
 async def test_web_api_rejects_cross_origin_stale_catalog_and_invalid_inputs(studio, monkeypatch):
     client, manager, body = studio
-    assert (await client.get("/api/catalog", headers={"X-Studio-CSRF": "wrong"})).status_code == 403
-    assert (
-        await client.post("/api/runs", json=body, headers={"Origin": "https://evil.test"})
-    ).status_code == 403
+    expired = await client.post("/api/runs", json=body, headers={"X-Studio-CSRF": "wrong"})
+    assert expired.status_code == 403
+    assert expired.headers["x-studio-error"] == "stale-session"
+    for token in ["wrong", client.headers["X-Studio-CSRF"]]:
+        cross_origin = await client.post(
+            "/api/runs",
+            json=body,
+            headers={"Origin": "https://evil.test", "X-Studio-CSRF": token},
+        )
+        assert cross_origin.status_code == 403
+        assert "x-studio-error" not in cross_origin.headers
     assert (await client.get("/", headers={"Host": "evil.test"})).status_code == 400
     assert (
         await client.post("/api/runs", json={**body, "capability_id": "0" * 64})
@@ -65,6 +72,155 @@ async def test_web_api_rejects_cross_origin_stale_catalog_and_invalid_inputs(stu
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     assert (await client.post("/api/runs", json={**body, "mode": "discover"})).status_code == 422
     assert not manager.runs
+
+
+@pytest.mark.browser
+async def test_stale_dashboard_recovers_and_starts_exactly_one_run(studio_url):
+    origin, manager, _ = studio_url
+    async with async_playwright() as runtime:
+        browser = await runtime.chromium.launch()
+        page = await browser.new_page()
+        documents = 0
+        posts = 0
+
+        async def stale_document(route):
+            nonlocal documents
+            documents += 1
+            response = await route.fetch()
+            html = await response.text()
+            if documents == 1:
+                html = re.sub(
+                    r'name="studio-csrf" content="[^"]+"',
+                    'name="studio-csrf" content="expired"',
+                    html,
+                )
+            await route.fulfill(response=response, body=html)
+
+        async def expire_start(route):
+            nonlocal posts
+            if route.request.method == "POST":
+                posts += 1
+                if posts == 1:
+                    # Exercise the real authorization rejection, before the handler runs.
+                    await route.continue_(
+                        headers={**route.request.headers, "x-studio-csrf": "expired-again"}
+                    )
+                    return
+            await route.continue_()
+
+        try:
+            await page.route(origin + "/", stale_document)
+            await page.route(origin + "/api/runs", expire_start)
+            await page.goto(origin)
+            await expect(page.locator(".workflow-card")).to_have_count(6)
+            assert documents == 2
+            await page.get_by_label("Member ID", exact=True).fill("10042")
+            await page.get_by_label("Account nickname").fill("Preserved after reconnect")
+            await page.get_by_role("button", name="Run capability", exact=False).click()
+            await expect(page.locator("#run-status")).to_have_text("Success", timeout=20000)
+            await expect(page.locator("#outputs")).to_contain_text("Preserved after reconnect")
+            await expect(page.get_by_label("Member ID", exact=True)).to_have_value("10042")
+            await expect(page.locator("#form-error")).to_be_empty()
+            await expect(page.locator("#browser-image")).to_be_visible()
+            assert documents == 3 and posts == 2 and len(manager.runs) == 1
+            assert next(iter(manager.runs.values())).result.model_calls == 0
+        finally:
+            await browser.close()
+
+
+@pytest.mark.browser
+async def test_dashboard_clears_missing_run_without_losing_workflow_inputs(studio_url):
+    origin, manager, server_loop = studio_url
+    async with async_playwright() as runtime:
+        browser = await runtime.chromium.launch()
+        page = await browser.new_page()
+        try:
+            await page.goto(origin)
+            await page.get_by_role("button", name="Run capability", exact=False).click()
+            await expect(page.locator("#run-status")).to_have_text("Success", timeout=20000)
+            await page.get_by_label("Banking workflow", exact=True).select_option(
+                "card-replacement"
+            )
+            await page.get_by_role("button", name="Member 10042", exact=True).click()
+
+            async def discard_session():
+                await manager.close()
+                manager.runs.clear()
+
+            await asyncio.wrap_future(
+                asyncio.run_coroutine_threadsafe(discard_session(), server_loop)
+            )
+            await expect(page.locator("#run-status")).to_have_text("Ready", timeout=10000)
+            await expect(page.get_by_role("heading", name="Dashboard reconnected")).to_be_visible()
+            await expect(page.locator("#history-list button")).to_have_count(0)
+            await expect(page.locator("#browser-image")).to_be_hidden()
+            await expect(page.locator("#stop")).to_be_hidden()
+            await expect(page.locator("#result-content")).to_be_hidden()
+            await expect(page.get_by_label("Card reference", exact=True)).to_have_value(
+                "CARD-10042"
+            )
+            await expect(page.get_by_label("Banking workflow", exact=True)).to_have_value(
+                "card-replacement"
+            )
+            await expect(
+                page.get_by_role("button", name="Discover and save", exact=False)
+            ).to_be_enabled()
+            await expect(page.locator("#form-error")).to_be_empty()
+        finally:
+            await browser.close()
+
+
+@pytest.mark.browser
+@pytest.mark.parametrize("failure", ["forbidden", "invalid", "network", "expired"])
+async def test_start_failure_is_visible_and_never_retried_unsafely(studio_url, failure):
+    origin, manager, _ = studio_url
+    async with async_playwright() as runtime:
+        browser = await runtime.chromium.launch()
+        page = await browser.new_page()
+        posts = 0
+        documents = []
+        page.on(
+            "request",
+            lambda request: documents.append(request.url) if request.url == origin + "/" else None,
+        )
+
+        async def reject_start(route):
+            nonlocal posts
+            if route.request.method != "POST":
+                await route.continue_()
+                return
+            posts += 1
+            if failure == "network":
+                await route.abort("failed")
+            elif failure == "expired":
+                await route.continue_(headers={**route.request.headers, "x-studio-csrf": "expired"})
+            else:
+                await route.fulfill(
+                    status=403 if failure == "forbidden" else 422,
+                    json={"detail": "Start rejected for testing"},
+                )
+
+        try:
+            await page.route(origin + "/api/runs", reject_start)
+            await page.goto(origin)
+            await page.get_by_label("Account nickname").fill("Keep this input")
+            await page.get_by_role("button", name="Run capability", exact=False).click()
+            await expect(page.locator("#run-status")).to_have_text(
+                "Connection lost" if failure == "network" else "Not started"
+            )
+            await expect(page.locator("#empty-state h2")).to_have_text(
+                "Could not confirm a new run"
+            )
+            await expect(page.locator("#form-error")).not_to_be_empty()
+            await expect(
+                page.get_by_role("button", name="Run capability", exact=False)
+            ).to_be_enabled()
+            await expect(page.get_by_label("Account nickname")).to_have_value("Keep this input")
+            assert not manager.runs
+            assert posts == (2 if failure == "expired" else 1)
+            assert len(documents) == (2 if failure == "expired" else 1)
+        finally:
+            await browser.close()
 
 
 async def test_workflow_catalog_has_goals_without_fake_capabilities(studio):
