@@ -11,9 +11,13 @@ Open **http://127.0.0.1:8766**. Keep the terminal running. It hosts the dashboar
 banking application on port 8767. All following operations happen in the dashboard. No frontend build,
 Node.js installation, model key, or external API is needed for replay and human takeover.
 
+The expanded library contains six goals. For discovery inputs and negative tests for every workflow,
+see [Six banking workflows](BANKING_WORKFLOWS.md). The walkthrough below uses the original sub-account
+capability, which remains compatible.
+
 ## 1. Replay for a member
 
-Leave **Replay capability** selected. Choose **Prepared sub-account review**, member `10077`, product
+Leave **Replay capability** selected. Choose workflow **Sub-account review** and capability **Prepared sub-account review**, member `10077`, product
 `Checking`, nickname `Travel Fund`, and **Normal workflow**. Click **Run capability**.
 
 Watch the actual banking browser search the member, open the form, enter the parameters, and reach
@@ -62,7 +66,7 @@ With an eligible Gemini API key configured in local `.env`, choose **Discover wi
 
 The model receives the goal contract and masked live observations. It does not receive the saved action
 sequence or sensitive parameter values. Watch model calls and actual actions appear in Activity. Free-tier
-requests are spaced out, so allow roughly 1–3 minutes. Provider errors or quota exhaustion stop visibly;
+requests are spaced out, so allow roughly 2–5 minutes. Provider errors or quota exhaustion stop visibly;
 there is no paid fallback or automatic retry.
 
 After success, use **Use this capability with new inputs**. Change the member and nickname and run replay.

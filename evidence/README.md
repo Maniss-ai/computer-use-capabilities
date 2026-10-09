@@ -79,3 +79,21 @@ policy-checked actions, a verified checkpoint, and a capability with `llm_discov
 `make submission-check` rejects fixture-only discovery and requires a successful model-free replay
 with the same canonical artifact hash. This is a consistency check, not cryptographic attestation of
 provider logs. The source of each run remains part of the reviewer-visible evidence.
+
+## Expanded banking workflows
+
+All six goal paths pass real-browser compilation/replay tests with explicitly scripted test planners.
+The current suite passes **109 tests**. In addition, [the expanded live manifest](expanded/manifest.json)
+records a genuine Gemini transaction-dispute discovery (9 UI actions, 10 model calls), followed by
+replay with a second member and transaction (9 actions, zero model calls). Its live browser run took
+128.0 seconds; replay took 7.3 seconds, including web-preview presentation pauses.
+
+Two separate genuine address-change attempts stopped on provider service-unavailable responses before
+completion. Both failures are retained. They do not produce a capability and are not counted as verified
+model discovery. Live evidence currently demonstrates two distinct goals: the original sub-account
+review and the new transaction-dispute review. The other four goals are implemented and covered by
+real-browser tests, but successful live model discovery is not claimed for them.
+
+A newly built wheel was installed outside the checkout and replayed the dispute capability against
+the local banking UI successfully with zero model calls. See [the workflow guide](../docs/BANKING_WORKFLOWS.md)
+for example inputs, supported scenarios, and the exact discovery/replay procedure.

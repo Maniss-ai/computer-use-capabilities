@@ -1,0 +1,31 @@
+{"artifact_sha256": "484a9a58daa3f84fc8132c55c6fadfd8800702cdcab79c0d47b2cde95ea45980", "at": "2026-10-08T16:43:59.443376+00:00", "event": "replay_started", "run_id": "web-replay-047f750acd5f", "seq": 1, "source": "llm_discovery"}
+{"at": "2026-10-08T16:43:59.474816+00:00", "event": "action_started", "op": "fill", "run_id": "web-replay-047f750acd5f", "screen": "Find a member", "seq": 2, "step": "step_001", "target": "Member ID", "target_kind": "label"}
+{"at": "2026-10-08T16:44:00.125445+00:00", "event": "action_completed", "op": "fill", "run_id": "web-replay-047f750acd5f", "seq": 3, "step": "step_001"}
+{"at": "2026-10-08T16:44:00.146483+00:00", "event": "checkpoint_verified", "run_id": "web-replay-047f750acd5f", "screen": "Find a member", "seq": 4, "step": "step_001"}
+{"at": "2026-10-08T16:44:00.158341+00:00", "event": "action_started", "op": "click", "run_id": "web-replay-047f750acd5f", "screen": "Find a member", "seq": 5, "step": "step_002", "target": "Search", "target_kind": "button"}
+{"at": "2026-10-08T16:44:00.848535+00:00", "event": "action_completed", "op": "click", "run_id": "web-replay-047f750acd5f", "seq": 6, "step": "step_002"}
+{"at": "2026-10-08T16:44:00.872386+00:00", "event": "checkpoint_verified", "run_id": "web-replay-047f750acd5f", "screen": "Member details", "seq": 7, "step": "step_002"}
+{"at": "2026-10-08T16:44:00.881365+00:00", "event": "action_started", "op": "click", "run_id": "web-replay-047f750acd5f", "screen": "Member details", "seq": 8, "step": "step_003", "target": "Transaction disputes", "target_kind": "button"}
+{"at": "2026-10-08T16:44:01.552104+00:00", "event": "action_completed", "op": "click", "run_id": "web-replay-047f750acd5f", "seq": 9, "step": "step_003"}
+{"at": "2026-10-08T16:44:01.579387+00:00", "event": "checkpoint_verified", "run_id": "web-replay-047f750acd5f", "screen": "Transaction disputes", "seq": 10, "step": "step_003"}
+{"at": "2026-10-08T16:44:01.589687+00:00", "event": "action_started", "op": "fill", "run_id": "web-replay-047f750acd5f", "screen": "Transaction disputes", "seq": 11, "step": "step_004", "target": "Transaction reference", "target_kind": "label"}
+{"at": "2026-10-08T16:44:02.197498+00:00", "event": "action_completed", "op": "fill", "run_id": "web-replay-047f750acd5f", "seq": 12, "step": "step_004"}
+{"at": "2026-10-08T16:44:02.209621+00:00", "event": "checkpoint_verified", "run_id": "web-replay-047f750acd5f", "screen": "Transaction disputes", "seq": 13, "step": "step_004"}
+{"at": "2026-10-08T16:44:02.216796+00:00", "event": "action_started", "op": "click", "run_id": "web-replay-047f750acd5f", "screen": "Transaction disputes", "seq": 14, "step": "step_005", "target": "Find record", "target_kind": "button"}
+{"at": "2026-10-08T16:44:02.868730+00:00", "event": "action_completed", "op": "click", "run_id": "web-replay-047f750acd5f", "seq": 15, "step": "step_005"}
+{"at": "2026-10-08T16:44:02.887880+00:00", "event": "checkpoint_verified", "run_id": "web-replay-047f750acd5f", "screen": "Transaction details", "seq": 16, "step": "step_005"}
+{"at": "2026-10-08T16:44:02.898427+00:00", "event": "action_started", "op": "click", "run_id": "web-replay-047f750acd5f", "screen": "Transaction details", "seq": 17, "step": "step_006", "target": "Prepare dispute", "target_kind": "button"}
+{"at": "2026-10-08T16:44:03.570339+00:00", "event": "action_completed", "op": "click", "run_id": "web-replay-047f750acd5f", "seq": 18, "step": "step_006"}
+{"at": "2026-10-08T16:44:03.592337+00:00", "event": "checkpoint_verified", "run_id": "web-replay-047f750acd5f", "screen": "Dispute details", "seq": 19, "step": "step_006"}
+{"at": "2026-10-08T16:44:03.599549+00:00", "event": "action_started", "op": "select", "run_id": "web-replay-047f750acd5f", "screen": "Dispute details", "seq": 20, "step": "step_007", "target": "Dispute reason", "target_kind": "label"}
+{"at": "2026-10-08T16:44:04.209888+00:00", "event": "action_completed", "op": "select", "run_id": "web-replay-047f750acd5f", "seq": 21, "step": "step_007"}
+{"at": "2026-10-08T16:44:04.227256+00:00", "event": "checkpoint_verified", "run_id": "web-replay-047f750acd5f", "screen": "Dispute details", "seq": 22, "step": "step_007"}
+{"at": "2026-10-08T16:44:04.234910+00:00", "event": "action_started", "op": "select", "run_id": "web-replay-047f750acd5f", "screen": "Dispute details", "seq": 23, "step": "step_008", "target": "Contact channel", "target_kind": "label"}
+{"at": "2026-10-08T16:44:04.840610+00:00", "event": "action_completed", "op": "select", "run_id": "web-replay-047f750acd5f", "seq": 24, "step": "step_008"}
+{"at": "2026-10-08T16:44:04.858737+00:00", "event": "checkpoint_verified", "run_id": "web-replay-047f750acd5f", "screen": "Dispute details", "seq": 25, "step": "step_008"}
+{"at": "2026-10-08T16:44:04.866857+00:00", "event": "action_started", "op": "click", "run_id": "web-replay-047f750acd5f", "screen": "Dispute details", "seq": 26, "step": "step_009", "target": "Review request", "target_kind": "button"}
+{"at": "2026-10-08T16:44:05.523792+00:00", "event": "action_completed", "op": "click", "run_id": "web-replay-047f750acd5f", "seq": 27, "step": "step_009"}
+{"at": "2026-10-08T16:44:05.547219+00:00", "event": "checkpoint_verified", "run_id": "web-replay-047f750acd5f", "screen": "Review transaction dispute", "seq": 28, "step": "step_009"}
+{"at": "2026-10-08T16:44:05.626136+00:00", "event": "success_verified", "run_id": "web-replay-047f750acd5f", "seq": 29}
+{"at": "2026-10-08T16:44:05.626489+00:00", "event": "run_finished", "human_interventions": 0, "model_calls": 0, "run_id": "web-replay-047f750acd5f", "seq": 30, "status": "success"}
+{"at": "2026-10-08T16:44:05.690047+00:00", "event": "evidence_captured", "evidence": "checkpoint-0030.png", "run_id": "web-replay-047f750acd5f", "seq": 31}

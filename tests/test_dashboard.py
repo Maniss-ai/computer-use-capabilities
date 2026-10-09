@@ -67,6 +67,24 @@ async def test_web_api_rejects_cross_origin_stale_catalog_and_invalid_inputs(stu
     assert not manager.runs
 
 
+async def test_workflow_catalog_has_goals_without_fake_capabilities(studio):
+    client, manager, body = studio
+    data = (await client.get("/api/catalog")).json()
+    assert len(data["workflows"]) == 6
+    assert {cap["workflow_id"] for cap in data["capabilities"]} == {"subaccount"}
+    assert all("steps" not in item["contract"] for item in data["workflows"])
+    assert (
+        await client.post("/api/runs", json={**body, "workflow_id": "card-replacement"})
+    ).status_code == 422
+    assert (
+        await client.post("/api/runs", json={"workflow_id": "card-replacement", "inputs": {}})
+    ).status_code == 422
+    assert (
+        await client.post("/api/runs", json={**body, "workflow_id": "unknown"})
+    ).status_code == 404
+    assert not manager.runs
+
+
 @pytest.mark.browser
 async def test_web_replay_outputs_preview_redaction_and_single_writer(studio, monkeypatch):
     client, manager, body = studio
@@ -275,5 +293,60 @@ async def test_dashboard_browser_controls_replay_and_handoff(studio_url):
             assert not errors
             await page.set_viewport_size({"width": 390, "height": 844})
             assert await page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
+        finally:
+            await browser.close()
+
+
+@pytest.mark.browser
+async def test_new_workflow_web_discovery_then_matching_replay(studio_url, monkeypatch):
+    from capabilities.workflows import workflows
+    from tests.test_workflows import fixture_decisions
+
+    workflow = workflows()["transaction-dispute"]
+
+    class WebFixturePlanner(FixturePlanner):
+        def __init__(self, *args, **kwargs):
+            super().__init__(fixture_decisions(workflow))
+
+        async def close(self):
+            pass
+
+    monkeypatch.setenv("GEMINI_API_KEY", "test-fixture-key")
+    monkeypatch.setattr("capabilities.gemini.GeminiPlanner", WebFixturePlanner)
+    origin, manager, _ = studio_url
+    async with async_playwright() as runtime:
+        browser = await runtime.chromium.launch()
+        page = await browser.new_page(viewport={"width": 1440, "height": 1100})
+        errors = []
+        page.on("pageerror", lambda error: errors.append(str(error)))
+        try:
+            await page.goto(origin)
+            await expect(page.locator(".workflow-card")).to_have_count(6)
+            await page.get_by_label("Banking workflow", exact=True).select_option(workflow.id)
+            await expect(page.locator("#discover-mode")).to_have_attribute("aria-pressed", "true")
+            await expect(page.get_by_label("Transaction reference", exact=True)).to_have_value(
+                "TXN-10023"
+            )
+            await page.get_by_role("button", name="Discover and save", exact=False).click()
+            await expect(page.locator("#run-status")).to_have_text("Success", timeout=30000)
+            discovery = list(manager.runs.values())[-1]
+            assert discovery.workflow.id == workflow.id
+            assert discovery.capability is None  # Discovery did not need an existing sequence.
+            await page.get_by_role("button", name="Use this capability with new inputs").click()
+            await expect(page.locator("#capability")).to_contain_text(
+                discovery.evidence.run_id[-6:]
+            )
+            await page.get_by_role("button", name="Member 10042", exact=True).click()
+            await expect(page.get_by_label("Transaction reference", exact=True)).to_have_value(
+                "TXN-10042"
+            )
+            await page.get_by_role("button", name="Run capability", exact=False).click()
+            await expect(page.locator("#run-status")).to_have_text("Running", timeout=10000)
+            await expect(page.locator("#run-status")).to_have_text("Success", timeout=30000)
+            await expect(page.locator("#outputs")).to_contain_text("USD 126.50")
+            await expect(page.locator("#model-count")).to_have_text("0")
+            await page.set_viewport_size({"width": 390, "height": 844})
+            assert await page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
+            assert not errors
         finally:
             await browser.close()

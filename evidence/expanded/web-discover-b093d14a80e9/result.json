@@ -1,0 +1,15 @@
+{
+  "status": "failure",
+  "run_id": "web-discover-b093d14a80e9",
+  "outputs": {},
+  "outcome": null,
+  "error": {
+    "code": "model_service_unavailable",
+    "step": "step_002",
+    "expected": null,
+    "observed": "http_status_503",
+    "evidence": "failure-0007.png"
+  },
+  "model_calls": 2,
+  "human_interventions": 0
+}

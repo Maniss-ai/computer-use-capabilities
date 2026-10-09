@@ -2,14 +2,15 @@
 
 **Discover a UI workflow once. Invoke its typed capability without a model afterward.**
 
-A small computer-use backend for a synthetic legacy banking application: real browser actions,
+A computer-use backend and web console for six workflows in a synthetic legacy banking application: real browser actions,
 versioned capabilities, deterministic replay, policy enforcement, and human control of the same live session.
 
-> **Verified:** Gemini completed genuine live discovery in seven model calls. Its generated capability
-> replayed successfully with different inputs and **zero model calls**. The local suite passes **91 tests**,
-> lint, formatting, and strict typing. Inspect the [evidence index](evidence/README.md) and [report](REPORT.md).
+> **Verified:** **109 tests pass**, including real-browser coverage of all six goals. Genuine Gemini
+> discovery and matching **zero-model replay** are recorded for sub-account review and transaction
+> disputes. Four other goals are ready for discovery but have no successful live-model evidence yet.
+> Inspect the [evidence index](evidence/README.md), [workflow guide](docs/BANKING_WORKFLOWS.md), and [report](REPORT.md).
 
-![Capability Studio showing a completed replay against the synthetic banking UI](docs/screenshots/web-dashboard.png)
+![Capability Studio showing a completed replay against the synthetic banking UI](docs/screenshots/banking-workflows.png)
 
 ## Start here
 
@@ -32,7 +33,7 @@ uv run capabilities web
 ```
 
 Open **[Capability Studio](http://127.0.0.1:8766)**. This one command starts the dashboard and a separate
-banking sandbox on port 8767. Choose a saved capability, enter a member ID, product, and nickname, then
+banking sandbox on port 8767. Select a workflow, choose a saved capability, fill its inputs, then
 click **Run capability**. Watch the actual banking session and inspect verified outputs, the action log,
 and the capability JSON. Replay needs no key. **Discover with AI** uses a locally configured provider
 key and adds a new capability after verified success. Keys never go through the web form.
@@ -40,6 +41,10 @@ key and adds a new capability after verified success. Keys never go through the 
 Choose **Session expired** to demonstrate takeover entirely inside the web page: claim the session,
 click **Restore session** in the live banking view, and return control. The expand button enlarges the
 view. The final frame remains visible after the browser closes. A new run gets a fresh browser context.
+
+Explore [all six banking workflows and their test inputs](docs/BANKING_WORKFLOWS.md). New workflows
+can be discovered from their goal alone; they do not need an existing capability. The library shows
+which workflows have saved capabilities. Example buttons supply coherent inputs for two members.
 
 Read the [five-minute web demo](docs/WEB_DEMO.md) for the full presentation and testing sequence.
 The bundled default capability is an exact copy of the recorded Gemini artifact, with its provenance
@@ -219,6 +224,7 @@ limitations are indexed in [evidence/README.md](evidence/README.md).
 
 | Module | Responsibility |
 |---|---|
+| `workflows.py`, `profiles/workflows.json` | Six goal contracts and operator examples, with no ordered discovery steps |
 | `contracts.py` | Versioned capability, typed references, targets, decisions, and results |
 | `discovery.py` | Provider adapter, bounded observe/decide/act loop, successful-run compiler |
 | `gemini.py` | Gemini vision transport and response schema restricted to observed controls |
@@ -260,7 +266,7 @@ flowchart LR
   match fails closed. It does not promise resistance to arbitrary theme, zoom, or DPI changes.
 - The default profile permits only the sandbox's origin, enumerated routes, and six action rules.
   Final submission is absent from the network allowlist. Permissions are not supplied by the model.
-- Discovery defaults to 35 decisions, 180 seconds of active execution, and an observed-token budget.
+- Discovery defaults to 35 decisions, 360 seconds of active execution in the Harbor profile, and an observed-token budget.
   In-flight provider usage can exceed the token threshold by one request; it is not a dollar cap.
 - Browser-native alert/confirm/prompt dialogs are cancelled and reported as hard failures; the supported
   live handoff demonstration uses HTML dialogs and expired-session screens.

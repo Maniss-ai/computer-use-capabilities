@@ -68,7 +68,12 @@ class Executor:
                     raise ExecutionError("checkpoint_mismatch", expected=expected, observed=screen)
                 return screen
             self.evidence.event("condition_detected", code=condition, step=self.current_step)
-            if condition in {"member_not_found", "validation_error"}:
+            if condition in {
+                "member_not_found",
+                "validation_error",
+                "record_not_found",
+                "request_not_eligible",
+            }:
                 raise BusinessOutcome(condition)
             if condition in {"permission_denied", "app_unavailable", "native_dialog_cancelled"}:
                 raise ExecutionError(condition)

@@ -1,12 +1,362 @@
 {
   "origin": "http://127.0.0.1:8765",
-  "routes": ["/", "/workspace/search", "/workspace/member", "/workspace/new", "/workspace/review", "/workspace/restore", "/workspace/acknowledge", "/static/style.css", "/static/new-subaccount.png"],
+  "routes": [
+    "/",
+    "/workspace/search",
+    "/workspace/member",
+    "/workspace/new",
+    "/workspace/review",
+    "/workspace/restore",
+    "/workspace/acknowledge",
+    "/static/style.css",
+    "/static/new-subaccount.png",
+    "/workspace/services/card-replacement",
+    "/workspace/services/card-replacement/lookup",
+    "/workspace/services/card-replacement/prepare",
+    "/workspace/services/card-replacement/review",
+    "/workspace/services/transaction-dispute",
+    "/workspace/services/transaction-dispute/lookup",
+    "/workspace/services/transaction-dispute/prepare",
+    "/workspace/services/transaction-dispute/review",
+    "/workspace/services/address-change",
+    "/workspace/services/address-change/lookup",
+    "/workspace/services/address-change/prepare",
+    "/workspace/services/address-change/review",
+    "/workspace/services/statement-request",
+    "/workspace/services/statement-request/lookup",
+    "/workspace/services/statement-request/prepare",
+    "/workspace/services/statement-request/review",
+    "/workspace/services/fee-adjustment",
+    "/workspace/services/fee-adjustment/lookup",
+    "/workspace/services/fee-adjustment/prepare",
+    "/workspace/services/fee-adjustment/review"
+  ],
   "actions": [
-    {"screen": "Find a member", "op": "fill", "kind": "label", "name": "Member ID", "input_name": "member_id"},
-    {"screen": "Find a member", "op": "click", "kind": "button", "name": "Search"},
-    {"screen": "Member details", "op": "click", "kind": "visual", "name": "New sub-account"},
-    {"screen": "Prepare sub-account", "op": "select", "kind": "label", "name": "Product", "input_name": "product"},
-    {"screen": "Prepare sub-account", "op": "fill", "kind": "label", "name": "Nickname", "input_name": "nickname"},
-    {"screen": "Prepare sub-account", "op": "click", "kind": "button", "name": "Review request"}
+    {
+      "screen": "Find a member",
+      "op": "fill",
+      "kind": "label",
+      "name": "Member ID",
+      "input_name": "member_id"
+    },
+    {
+      "screen": "Find a member",
+      "op": "click",
+      "kind": "button",
+      "name": "Search"
+    },
+    {
+      "screen": "Member details",
+      "op": "click",
+      "kind": "visual",
+      "name": "New sub-account"
+    },
+    {
+      "screen": "Prepare sub-account",
+      "op": "select",
+      "kind": "label",
+      "name": "Product",
+      "input_name": "product"
+    },
+    {
+      "screen": "Prepare sub-account",
+      "op": "fill",
+      "kind": "label",
+      "name": "Nickname",
+      "input_name": "nickname"
+    },
+    {
+      "screen": "Prepare sub-account",
+      "op": "click",
+      "kind": "button",
+      "name": "Review request"
+    },
+    {
+      "screen": "Member details",
+      "op": "click",
+      "kind": "button",
+      "name": "Card services"
+    },
+    {
+      "screen": "Card services",
+      "op": "fill",
+      "kind": "label",
+      "name": "Card reference",
+      "input_name": "card_reference"
+    },
+    {
+      "screen": "Card services",
+      "op": "click",
+      "kind": "button",
+      "name": "Find record"
+    },
+    {
+      "screen": "Card details",
+      "op": "click",
+      "kind": "button",
+      "name": "Prepare replacement"
+    },
+    {
+      "screen": "Replacement preferences",
+      "op": "select",
+      "kind": "label",
+      "name": "Replacement reason",
+      "input_name": "replacement_reason"
+    },
+    {
+      "screen": "Replacement preferences",
+      "op": "select",
+      "kind": "label",
+      "name": "Replacement delivery",
+      "input_name": "replacement_delivery"
+    },
+    {
+      "screen": "Replacement preferences",
+      "op": "click",
+      "kind": "button",
+      "name": "Review request"
+    },
+    {
+      "screen": "Member details",
+      "op": "click",
+      "kind": "button",
+      "name": "Transaction disputes"
+    },
+    {
+      "screen": "Transaction disputes",
+      "op": "fill",
+      "kind": "label",
+      "name": "Transaction reference",
+      "input_name": "transaction_reference"
+    },
+    {
+      "screen": "Transaction disputes",
+      "op": "click",
+      "kind": "button",
+      "name": "Find record"
+    },
+    {
+      "screen": "Transaction details",
+      "op": "click",
+      "kind": "button",
+      "name": "Prepare dispute"
+    },
+    {
+      "screen": "Dispute details",
+      "op": "select",
+      "kind": "label",
+      "name": "Dispute reason",
+      "input_name": "dispute_reason"
+    },
+    {
+      "screen": "Dispute details",
+      "op": "select",
+      "kind": "label",
+      "name": "Contact channel",
+      "input_name": "contact_channel"
+    },
+    {
+      "screen": "Dispute details",
+      "op": "click",
+      "kind": "button",
+      "name": "Review request"
+    },
+    {
+      "screen": "Member details",
+      "op": "click",
+      "kind": "button",
+      "name": "Contact maintenance"
+    },
+    {
+      "screen": "Contact details",
+      "op": "click",
+      "kind": "button",
+      "name": "Prepare address change"
+    },
+    {
+      "screen": "New mailing address",
+      "op": "fill",
+      "kind": "label",
+      "name": "Street address",
+      "input_name": "street"
+    },
+    {
+      "screen": "New mailing address",
+      "op": "fill",
+      "kind": "label",
+      "name": "City",
+      "input_name": "city"
+    },
+    {
+      "screen": "New mailing address",
+      "op": "fill",
+      "kind": "label",
+      "name": "State code",
+      "input_name": "region"
+    },
+    {
+      "screen": "New mailing address",
+      "op": "fill",
+      "kind": "label",
+      "name": "Postal code",
+      "input_name": "postal_code"
+    },
+    {
+      "screen": "New mailing address",
+      "op": "select",
+      "kind": "label",
+      "name": "Verification method",
+      "input_name": "verification_method"
+    },
+    {
+      "screen": "New mailing address",
+      "op": "click",
+      "kind": "button",
+      "name": "Review request"
+    },
+    {
+      "screen": "Member details",
+      "op": "click",
+      "kind": "button",
+      "name": "Statements and documents"
+    },
+    {
+      "screen": "Statements and documents",
+      "op": "fill",
+      "kind": "label",
+      "name": "Account reference",
+      "input_name": "account_reference"
+    },
+    {
+      "screen": "Statements and documents",
+      "op": "click",
+      "kind": "button",
+      "name": "Find record"
+    },
+    {
+      "screen": "Statement account",
+      "op": "click",
+      "kind": "button",
+      "name": "Prepare statement request"
+    },
+    {
+      "screen": "Statement preferences",
+      "op": "select",
+      "kind": "label",
+      "name": "Statement period",
+      "input_name": "statement_period"
+    },
+    {
+      "screen": "Statement preferences",
+      "op": "select",
+      "kind": "label",
+      "name": "Document format",
+      "input_name": "document_format"
+    },
+    {
+      "screen": "Statement preferences",
+      "op": "select",
+      "kind": "label",
+      "name": "Document delivery",
+      "input_name": "document_delivery"
+    },
+    {
+      "screen": "Statement preferences",
+      "op": "click",
+      "kind": "button",
+      "name": "Review request"
+    },
+    {
+      "screen": "Member details",
+      "op": "click",
+      "kind": "button",
+      "name": "Fee servicing"
+    },
+    {
+      "screen": "Fee servicing",
+      "op": "fill",
+      "kind": "label",
+      "name": "Fee reference",
+      "input_name": "fee_reference"
+    },
+    {
+      "screen": "Fee servicing",
+      "op": "click",
+      "kind": "button",
+      "name": "Find record"
+    },
+    {
+      "screen": "Fee details",
+      "op": "click",
+      "kind": "button",
+      "name": "Prepare adjustment request"
+    },
+    {
+      "screen": "Adjustment details",
+      "op": "select",
+      "kind": "label",
+      "name": "Adjustment reason",
+      "input_name": "adjustment_reason"
+    },
+    {
+      "screen": "Adjustment details",
+      "op": "select",
+      "kind": "label",
+      "name": "Requested resolution",
+      "input_name": "requested_resolution"
+    },
+    {
+      "screen": "Adjustment details",
+      "op": "fill",
+      "kind": "label",
+      "name": "Supporting note",
+      "input_name": "supporting_note"
+    },
+    {
+      "screen": "Adjustment details",
+      "op": "click",
+      "kind": "button",
+      "name": "Review request"
+    }
+  ],
+  "timeout_seconds": 360,
+  "sensitive_inputs": [
+    "account_reference",
+    "card_reference",
+    "city",
+    "fee_reference",
+    "member_id",
+    "nickname",
+    "postal_code",
+    "region",
+    "street",
+    "supporting_note",
+    "transaction_reference"
+  ],
+  "sensitive_fields": [
+    "Account product",
+    "Account reference",
+    "Card product",
+    "Card reference",
+    "Card standing",
+    "City",
+    "Contact standing",
+    "Current city",
+    "Current mailing address",
+    "Document access",
+    "Fee amount",
+    "Fee reference",
+    "Fee standing",
+    "Fee type",
+    "Member reference",
+    "Merchant",
+    "Nickname",
+    "Postal code",
+    "State code",
+    "Street address",
+    "Supporting note",
+    "Transaction amount",
+    "Transaction reference",
+    "Transaction status"
   ]
 }

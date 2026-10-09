@@ -1,0 +1,110 @@
+<p class="intro">{{ service.description }}</p>
+<div class="service-context">
+  <span>Member {{ state.member }} · {{ member_name }}</span
+  ><span>Staff-assisted request · Review required</span>
+</div>
+{% if stage == 'lookup' %}
+<div class="card">
+  <h2>Locate the member's record</h2>
+  <p class="intro">
+    References are scoped to the selected member. A reference belonging to
+    another member will not match.
+  </p>
+  <form method="post" action="/workspace/services/{{ service.slug }}/lookup">
+    <label for="record-reference">{{ service.lookup_label }}</label>
+    <input
+      id="record-reference"
+      name="{{ service.lookup_name }}"
+      required
+      maxlength="80"
+      autocomplete="off"
+    />
+    <div class="actions"><button>Find record</button></div>
+  </form>
+</div>
+<div class="fixture-note record-hint">
+  Training reference: {{ service.reference_prefix }}-{{ state.member }}. Append
+  -HOLD to test an ineligible record.
+</div>
+{% elif stage == 'detail' %}
+<div class="card">
+  <h2>Record overview</h2>
+  <table class="data">
+    <tr>
+      <td>Member reference</td>
+      <td>{{ state.member }}</td>
+    </tr>
+    {% for label, value in state.record.items() %}
+    <tr>
+      <td>{{ label }}</td>
+      <td>{{ value }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <form method="get" action="/workspace/services/{{ service.slug }}/prepare">
+    <div class="actions"><button>{{ service.prepare_button }}</button></div>
+  </form>
+</div>
+<div class="fixture-note">
+  Preparation does not change the underlying record. An authorized staff member
+  must review any final request.
+</div>
+{% elif stage == 'prepare' %}
+<div class="card">
+  <h2>Request preferences</h2>
+  <form method="post" action="/workspace/services/{{ service.slug }}/review">
+    <table class="form-table">
+      {% for item in service.fields %}
+      <tr>
+        <td><label for="field-{{ item.name }}">{{ item.label }}</label></td>
+        <td>
+          {% if item.choices %}<select
+            id="field-{{ item.name }}"
+            name="{{ item.name }}"
+            required
+          >
+            <option value="" disabled selected>Select an option</option>
+            {% for choice in item.choices %}
+            <option>{{ choice }}</option>
+            {% endfor %}
+          </select>
+          {% else %}<input
+            id="field-{{ item.name }}"
+            name="{{ item.name }}"
+            required
+            maxlength="80"
+            autocomplete="off"
+          />{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    <div class="actions">
+      <button>Review request</button>{% if state.scenario == 'ambiguous'
+      %}<button>Review request</button>{% endif %}
+    </div>
+  </form>
+</div>
+{% elif stage == 'review' %}
+<div class="success-banner">Request prepared · Awaiting staff verification</div>
+<div class="card">
+  <h2>Request summary</h2>
+  <table class="data">
+    {% for label, value in rows.items() %}
+    <tr>
+      <td>{{ label }}</td>
+      <td>{{ value }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <div class="actions">
+    <form method="post" action="/workspace/services/{{ service.slug }}/commit">
+      <button class="danger">Submit request</button>
+    </form>
+    <span class="muted"
+      >Final submission is outside the automation policy. No underlying record
+      has changed.</span
+    >
+  </div>
+</div>
+{% endif %}

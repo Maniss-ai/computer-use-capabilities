@@ -1,6 +1,43 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Harbor Ledger | Member servicing</title>
-<link rel="stylesheet" href="/static/style.css"></head><body class="shell">
-<header><span class="brand-mark">H</span><strong>Harbor<span class="light">Ledger</span></strong><span class="environment">TRAINING ENVIRONMENT</span><span class="staff">MS <span>Member services</span></span></header>
-<div class="layout"><aside><small>WORKSPACE</small><a class="active">▤ &nbsp; Member servicing</a><a>▧ &nbsp; Account operations</a><a>◷ &nbsp; Activity</a><div class="aside-bottom">LOCAL SANDBOX<br><span>All records are synthetic</span></div></aside>
-<main><div class="breadcrumb">Operations / Member servicing <span class="scenario">Scenario: {{ scenario }}</span></div><iframe title="Workspace" src="/workspace/search"></iframe></main></div>
-</body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Harbor Ledger | Banking operations</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body class="shell">
+    <header>
+      <span class="brand-mark">H</span
+      ><strong>Harbor<span class="light">Ledger Bank</span></strong
+      ><span class="environment">TRAINING ENVIRONMENT</span
+      ><span class="staff">MS <span>Member services</span></span>
+    </header>
+    <div class="layout">
+      <aside>
+        <small>WORKSPACE</small
+        ><a class="active" href="/workspace/search" target="Workspace"
+          >▤ &nbsp; Member workspace</a
+        >
+        <div class="nav-label">Accounts &amp; deposits</div>
+        <div class="nav-label">Cards &amp; disputes</div>
+        <div class="nav-label">Profile &amp; documents</div>
+        <div class="nav-label">Fee servicing</div>
+        <p class="nav-note">Find a member to open a servicing workspace.</p>
+        <div class="aside-bottom">
+          LOCAL SANDBOX<br /><span>All records are synthetic</span>
+        </div>
+      </aside>
+      <main>
+        <div class="breadcrumb">
+          Banking operations / Member workspace
+          <span class="scenario">Scenario: {{ scenario }}</span>
+        </div>
+        <iframe
+          title="Workspace"
+          name="Workspace"
+          src="/workspace/search"
+        ></iframe>
+      </main>
+    </div>
+  </body>
+</html>

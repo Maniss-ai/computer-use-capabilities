@@ -46,6 +46,27 @@ SCREENS = (
     "Permission denied",
     "Application unavailable",
     "Session expired",
+    "Service record not found",
+    "Request not eligible",
+    "Card services",
+    "Card details",
+    "Replacement preferences",
+    "Review card replacement",
+    "Transaction disputes",
+    "Transaction details",
+    "Dispute details",
+    "Review transaction dispute",
+    "Contact details",
+    "New mailing address",
+    "Review address change",
+    "Statements and documents",
+    "Statement account",
+    "Statement preferences",
+    "Review statement request",
+    "Fee servicing",
+    "Fee details",
+    "Adjustment details",
+    "Review fee adjustment",
 )
 INSTRUMENTATION = """(() => {
   for (const kind of ['click', 'input', 'change', 'submit']) {
@@ -91,6 +112,7 @@ class BrowserSurface:
         self.page: Page
         self.blocked = False
         self.dialog: Dialog | None = None
+        self.applied_inputs: set[str] = set()
 
     async def start(self, url: str) -> None:
         self.policy.check_url(url)
@@ -141,6 +163,8 @@ class BrowserSurface:
         self.evidence.event("native_dialog_cancelled", code=dialog.type)
 
     async def _manual_binding(self, source: dict[str, Any], payload: dict[str, object]) -> None:
+        if self.control.owner == "human":
+            self.applied_inputs.clear()
         if self.policy.allows_url(source["frame"].url):
             await self.control.record_manual(payload)
 
@@ -210,6 +234,8 @@ class BrowserSurface:
                 "Permission denied",
                 "Application unavailable",
                 "Session expired",
+                "Service record not found",
+                "Request not eligible",
                 "native_dialog",
             }:
                 return  # The engine classifies exceptional states before checking the checkpoint.
@@ -220,6 +246,8 @@ class BrowserSurface:
         screen = await self.screen()
         mapping = {
             "Member not found": "member_not_found",
+            "Service record not found": "record_not_found",
+            "Request not eligible": "request_not_eligible",
             "Validation error": "validation_error",
             "Permission denied": "permission_denied",
             "Application unavailable": "app_unavailable",
@@ -255,6 +283,7 @@ class BrowserSurface:
                 if not isinstance(action, Click):
                     raise ExecutionError("unsupported_action")
                 await self._visual_click(action.target)
+                self.applied_inputs.clear()
             else:
                 locator = await self._unique(self._locator(action.target))
                 if isinstance(action, Click):
@@ -264,10 +293,15 @@ class BrowserSurface:
                     ):
                         await locator.click()
                     await self.workspace.locator("h1").wait_for(state="visible")
+                    self.applied_inputs.clear()
                 elif isinstance(action, Fill):
                     await locator.fill(resolve(action.value, inputs))
+                    if action.value.kind == "input":
+                        self.applied_inputs.add(action.value.name)
                 elif isinstance(action, Select):
                     await locator.select_option(label=resolve(action.value, inputs))
+                    if action.value.kind == "input":
+                        self.applied_inputs.add(action.value.name)
             await self._check_context()
         except PlaywrightTimeout as error:
             if self.dialog is not None:
@@ -317,7 +351,12 @@ class BrowserSurface:
                 target = Target(kind=rule.kind, name=rule.name)  # type: ignore[arg-type]
                 if target.kind == "visual" or await self._locator(target).count():
                     controls.append(
-                        {"op": rule.op, "target": target.model_dump(), "input": rule.input_name}
+                        {
+                            "op": rule.op,
+                            "target": target.model_dump(),
+                            "input": rule.input_name,
+                            "input_applied": rule.input_name in self.applied_inputs,
+                        }
                     )
         result: dict[str, Any] = {"screen": screen, "controls": controls}
         if screen in SCREENS:
@@ -328,6 +367,7 @@ class BrowserSurface:
         masks = [
             self.workspace.locator("input, select, textarea"),
             self.workspace.locator("table.data td:not(:first-child)"),
+            self.workspace.locator(".service-context, .record-hint"),
         ]
         # Unknown screens are never captured. Known profile masks include visible financial data.
         return await self.page.screenshot(mask=masks, mask_color="#253746", animations="disabled")

@@ -23,7 +23,7 @@
       <section class="intro">
         <div>
           <div class="eyebrow">COMPUTER-USE AUTOMATION</div>
-          <h1>One workflow. New inputs. No repeated reasoning.</h1>
+          <h1>Six banking workflows. Discover once. Reuse with confidence.</h1>
           <p>
             Discover a workflow with AI, save the verified steps, then replay
             them without a model.
@@ -58,6 +58,16 @@
           </div>
         </div>
       </section>
+      <section class="workflow-library" aria-label="Banking workflow library">
+        <div class="library-heading">
+          <div>
+            <div class="eyebrow">WORKFLOW LIBRARY</div>
+            <h2>Choose the work to prepare</h2>
+          </div>
+          <span id="library-count" class="tag"></span>
+        </div>
+        <div id="workflow-cards" class="workflow-cards"></div>
+      </section>
       <div class="workspace-grid">
         <aside class="panel setup">
           <div class="panel-heading">
@@ -78,8 +88,13 @@
             Use a saved workflow with new inputs. No model or API key needed.
           </p>
           <form id="run-form">
-            <label for="capability">Saved capability</label
-            ><select id="capability" required></select>
+            <label for="workflow">Banking workflow</label
+            ><select id="workflow" required></select>
+            <p id="workflow-description" class="help"></p>
+            <div id="saved-capability-field">
+              <label for="capability">Saved capability</label
+              ><select id="capability"></select>
+            </div>
             <div id="capability-meta" class="inline-note"></div>
             <div id="discovery-fields" hidden>
               <label for="provider">Model provider</label
@@ -90,48 +105,24 @@
               <p id="provider-status" class="help"></p>
               <div class="goal">
                 <strong>Discovery goal</strong>
-                <p>
-                  Find the member, prepare the requested sub-account, and stop
-                  at review. AI chooses the steps; you do not demonstrate them
-                  first.
-                </p>
+                <p id="goal-description"></p>
               </div>
             </div>
             <div class="divider"></div>
-            <label for="member-id">Member ID</label
-            ><input
-              id="member-id"
-              name="member_id"
-              value="10077"
-              inputmode="numeric"
-              pattern="[0-9]{5}"
-              maxlength="5"
-              required
-              autocomplete="off"
-            />
-            <p class="help field-help">
-              Demo members: 10023, 10042, 10077. Try 99999 for a not-found
-              result.
-            </p>
-            <div class="field-row">
-              <div>
-                <label for="product">Product</label
-                ><select id="product">
-                  <option>Checking</option>
-                  <option>Savings</option>
-                </select>
-              </div>
-              <div>
-                <label for="nickname">Account nickname</label
-                ><input
-                  id="nickname"
-                  value="Travel Fund"
-                  maxlength="80"
-                  required
-                  autocomplete="off"
-                />
-              </div>
+            <div class="example-controls">
+              <span>Example inputs</span
+              ><button id="example-first" class="secondary" type="button">
+                Member 10023</button
+              ><button id="example-second" class="secondary" type="button">
+                Member 10042
+              </button>
             </div>
+            <div id="workflow-inputs"></div>
+            <p class="help">
+              Examples use synthetic records. Record references belong to a
+              specific member; changing the member may also require changing the
+              record reference.
+            </p>
             <label for="scenario">Test scenario</label
             ><select id="scenario">
               <option value="normal">Normal workflow</option>
@@ -155,7 +146,8 @@
               </option>
             </select>
             <p id="scenario-help" class="help">
-              The run stops at the review screen. It never creates an account.
+              The run prepares a review. It does not submit requests or change
+              banking records.
             </p>
             <button class="primary run-button" id="start" type="submit">
               <span>▶</span> Run capability
@@ -168,9 +160,9 @@
           <div class="tip">
             <span>↳</span>
             <p>
-              <strong>Try this first</strong><br />Run once, change the member
-              and nickname, then run again. Watch the outputs change while model
-              calls stay at zero.
+              <strong>Try this first</strong><br />Choose a workflow, discover
+              it with AI, then select a second example and replay the saved
+              capability. Model calls should stay at zero during replay.
             </p>
           </div>
         </aside>

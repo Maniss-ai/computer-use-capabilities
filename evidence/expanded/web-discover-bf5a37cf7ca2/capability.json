@@ -1,0 +1,338 @@
+{
+  "schema_version": "1.0",
+  "capability_version": "1.0.0",
+  "profile": "harbor-ledger/v1",
+  "goal": {
+    "name": "prepare_transaction_dispute_review",
+    "inputs": {
+      "member_id": {
+        "type": "string",
+        "description": "Synthetic five-digit member reference",
+        "format": "member_id",
+        "choices": [],
+        "sensitive": true,
+        "max_length": 80
+      },
+      "transaction_reference": {
+        "type": "string",
+        "description": "Transaction reference",
+        "format": "text",
+        "choices": [],
+        "sensitive": true,
+        "max_length": 80
+      },
+      "dispute_reason": {
+        "type": "string",
+        "description": "Dispute reason",
+        "format": "text",
+        "choices": [
+          "Duplicate charge",
+          "Service not received",
+          "Unrecognized transaction"
+        ],
+        "sensitive": false,
+        "max_length": 80
+      },
+      "contact_channel": {
+        "type": "string",
+        "description": "Contact channel",
+        "format": "text",
+        "choices": [
+          "Secure message",
+          "Phone"
+        ],
+        "sensitive": false,
+        "max_length": 80
+      }
+    },
+    "outputs": {
+      "member_id": {
+        "type": "string",
+        "target": {
+          "kind": "field",
+          "name": "Member reference",
+          "scope": "workspace"
+        },
+        "sensitive": true,
+        "true_when": null
+      },
+      "transaction_reference": {
+        "type": "string",
+        "target": {
+          "kind": "field",
+          "name": "Transaction reference",
+          "scope": "workspace"
+        },
+        "sensitive": true,
+        "true_when": null
+      },
+      "dispute_reason": {
+        "type": "string",
+        "target": {
+          "kind": "field",
+          "name": "Dispute reason",
+          "scope": "workspace"
+        },
+        "sensitive": false,
+        "true_when": null
+      },
+      "contact_channel": {
+        "type": "string",
+        "target": {
+          "kind": "field",
+          "name": "Contact channel",
+          "scope": "workspace"
+        },
+        "sensitive": false,
+        "true_when": null
+      },
+      "merchant": {
+        "type": "string",
+        "target": {
+          "kind": "field",
+          "name": "Merchant",
+          "scope": "workspace"
+        },
+        "sensitive": true,
+        "true_when": null
+      },
+      "transaction_amount": {
+        "type": "string",
+        "target": {
+          "kind": "field",
+          "name": "Transaction amount",
+          "scope": "workspace"
+        },
+        "sensitive": true,
+        "true_when": null
+      },
+      "transaction_status": {
+        "type": "string",
+        "target": {
+          "kind": "field",
+          "name": "Transaction status",
+          "scope": "workspace"
+        },
+        "sensitive": true,
+        "true_when": null
+      },
+      "review_ready": {
+        "type": "boolean",
+        "target": {
+          "kind": "field",
+          "name": "Status",
+          "scope": "workspace"
+        },
+        "sensitive": false,
+        "true_when": "Ready for review"
+      }
+    },
+    "success_screen": "Review transaction dispute",
+    "checks": [
+      {
+        "target": {
+          "kind": "field",
+          "name": "Member reference",
+          "scope": "workspace"
+        },
+        "equals": {
+          "kind": "input",
+          "name": "member_id"
+        }
+      },
+      {
+        "target": {
+          "kind": "field",
+          "name": "Transaction reference",
+          "scope": "workspace"
+        },
+        "equals": {
+          "kind": "input",
+          "name": "transaction_reference"
+        }
+      },
+      {
+        "target": {
+          "kind": "field",
+          "name": "Dispute reason",
+          "scope": "workspace"
+        },
+        "equals": {
+          "kind": "input",
+          "name": "dispute_reason"
+        }
+      },
+      {
+        "target": {
+          "kind": "field",
+          "name": "Contact channel",
+          "scope": "workspace"
+        },
+        "equals": {
+          "kind": "input",
+          "name": "contact_channel"
+        }
+      },
+      {
+        "target": {
+          "kind": "field",
+          "name": "Status",
+          "scope": "workspace"
+        },
+        "equals": {
+          "kind": "constant",
+          "value": "Ready for review"
+        }
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "step_001",
+      "before": "Find a member",
+      "action": {
+        "op": "fill",
+        "target": {
+          "kind": "label",
+          "name": "Member ID",
+          "scope": "workspace"
+        },
+        "value": {
+          "kind": "input",
+          "name": "member_id"
+        }
+      },
+      "after": "Find a member",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_002",
+      "before": "Find a member",
+      "action": {
+        "op": "click",
+        "target": {
+          "kind": "button",
+          "name": "Search",
+          "scope": "workspace"
+        }
+      },
+      "after": "Member details",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_003",
+      "before": "Member details",
+      "action": {
+        "op": "click",
+        "target": {
+          "kind": "button",
+          "name": "Transaction disputes",
+          "scope": "workspace"
+        }
+      },
+      "after": "Transaction disputes",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_004",
+      "before": "Transaction disputes",
+      "action": {
+        "op": "fill",
+        "target": {
+          "kind": "label",
+          "name": "Transaction reference",
+          "scope": "workspace"
+        },
+        "value": {
+          "kind": "input",
+          "name": "transaction_reference"
+        }
+      },
+      "after": "Transaction disputes",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_005",
+      "before": "Transaction disputes",
+      "action": {
+        "op": "click",
+        "target": {
+          "kind": "button",
+          "name": "Find record",
+          "scope": "workspace"
+        }
+      },
+      "after": "Transaction details",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_006",
+      "before": "Transaction details",
+      "action": {
+        "op": "click",
+        "target": {
+          "kind": "button",
+          "name": "Prepare dispute",
+          "scope": "workspace"
+        }
+      },
+      "after": "Dispute details",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_007",
+      "before": "Dispute details",
+      "action": {
+        "op": "select",
+        "target": {
+          "kind": "label",
+          "name": "Dispute reason",
+          "scope": "workspace"
+        },
+        "value": {
+          "kind": "input",
+          "name": "dispute_reason"
+        }
+      },
+      "after": "Dispute details",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_008",
+      "before": "Dispute details",
+      "action": {
+        "op": "select",
+        "target": {
+          "kind": "label",
+          "name": "Contact channel",
+          "scope": "workspace"
+        },
+        "value": {
+          "kind": "input",
+          "name": "contact_channel"
+        }
+      },
+      "after": "Dispute details",
+      "timeout_ms": 3000
+    },
+    {
+      "id": "step_009",
+      "before": "Dispute details",
+      "action": {
+        "op": "click",
+        "target": {
+          "kind": "button",
+          "name": "Review request",
+          "scope": "workspace"
+        }
+      },
+      "after": "Review transaction dispute",
+      "timeout_ms": 3000
+    }
+  ],
+  "provenance": {
+    "source": "llm_discovery",
+    "run_id": "web-discover-bf5a37cf7ca2",
+    "model": "gemini-3.1-flash-lite"
+  }
+}

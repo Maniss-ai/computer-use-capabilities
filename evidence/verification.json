@@ -1,15 +1,15 @@
 {
-  "verified_at": "2026-10-08T08:40:57.329985+00:00",
-  "scope": "Local implementation, genuine Gemini discovery, matching model-free replay, and clean wheel installation",
+  "verified_at": "2026-10-09T08:00:20.031275+00:00",
+  "scope": "Six local servicing workflows, real-browser regression tests, genuine dispute discovery and matching replay, and packaged CLI replay outside checkout",
   "acceptance": {
     "command": "make verify",
-    "tests_passed": 91,
+    "tests_passed": 109,
     "tests_failed": 0,
     "lint": "passed",
     "format": "passed",
     "strict_typing": "passed",
     "offline_deliverables": "passed",
-    "test_elapsed_seconds": 65.28
+    "test_elapsed_seconds": 102.25
   },
   "replay_stability": {
     "runs": 10,
@@ -21,9 +21,10 @@
     "mode": "non-editable wheel in a new virtual environment",
     "result": "passed",
     "packaged_cli_replay_outside_checkout": "passed",
-    "dashboard_assets_and_catalog_outside_checkout": "passed"
+    "dashboard_assets_and_catalog_outside_checkout": "passed",
+    "six_workflow_wheel_replay_outside_checkout": "passed: transaction dispute; zero model calls"
   },
-  "model_api_calls": 27,
+  "model_api_calls": 40,
   "live_discovery": {
     "run_id": "discover-2acef308bd9c",
     "status": "success",
@@ -58,5 +59,15 @@
     "responsive_layouts": "1440px desktop and 390px mobile; no horizontal overflow",
     "fullscreen_preview": "verified interactively",
     "human_takeover": "real same-session control exercised by a scripted browser test"
+  },
+  "expanded_workflows": {
+    "implemented": 6,
+    "browser_verified_with_fixture_planners": 6,
+    "new_genuine_discovery": "evidence/expanded/web-discover-bf5a37cf7ca2",
+    "matching_replay": "evidence/expanded/web-replay-047f750acd5f",
+    "discovery_model_calls": 10,
+    "replay_model_calls": 0,
+    "provider_failures": "Two address discovery attempts stopped on model_service_unavailable. See expanded/manifest.json.",
+    "new_tests": 18
   }
 }

@@ -2,7 +2,8 @@
 
 ## Architecture
 
-The implemented vertical slice prepares a synthetic member's sub-account request and stops at review.
+Six supported workflows prepare sub-account, card replacement, dispute, address-change, statement,
+and fee-adjustment reviews in a synthetic banking application. Final submissions remain blocked.
 A separate FastAPI application supplies a legacy-style UI: an iframe, tables, ordinary form posts,
 no test IDs, and a canvas action. The runner never imports its records or calls its business routes
 outside browser interaction. Python keeps the provider adapter, contracts, executor, and tests cohesive.
@@ -17,6 +18,11 @@ single-session prototype; a queue or database would not strengthen the central g
 selection, genuine discovery, result inspection, a live browser preview, and run cancellation. One
 command starts the console and sandbox on separate loopback origins. The console never calls banking
 business routes on the runner's behalf; execution still uses the browser surface.
+
+An independent goal registry supplies workflow-specific inputs, outputs, and examples without requiring
+a prior capability. The member screen exposes multiple departments; discovery chooses the relevant path.
+Record lookups enforce member ownership and distinguish missing from ineligible records. A non-sensitive
+field-progress flag complements masked screenshots on longer forms.
 
 The app profile deliberately contains control permissions and known state detectors, not an ordered
 workflow. The goal contract defines the required result; it does not reveal the path. Discovery still
@@ -124,8 +130,8 @@ Desktop drivers, remote co-browsing, production authentication, distributed exec
 and automatic cross-tenant specialization are omitted. Crash recovery closes the live context rather
 than pretending an in-memory session can be reconstructed. There is no autonomous LLM fallback on replay.
 
-Only repeated-run stability is included as a stretch goal. The genuine discovery/replay evidence and
-submission gate pass; 91 local tests cover the execution and control boundaries. Next steps are a
-manual desktop handoff recording, vendor/profile qualification, and an approval registry. Provider
-timeouts and invalid proposals encountered during development are retained as failed evidence; one
-successful model run is not a discovery reliability benchmark.
+Repeated-run stability and multiple servicing workflows are demonstrated. The genuine discovery/replay evidence and
+submission gate pass; 109 local tests cover the execution and control boundaries. Next steps are a
+manual desktop handoff recording, vendor/profile qualification, and an approval registry. Live model evidence covers sub-account and dispute review; four other goals have only fixture-planner
+browser validation. Two expanded address-discovery attempts stopped on provider unavailability.
+Failures are retained; the successful runs are not a discovery reliability benchmark.

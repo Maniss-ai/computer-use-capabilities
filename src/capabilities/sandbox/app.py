@@ -1,15 +1,18 @@
 from __future__ import annotations
 
 import asyncio
+import re
 import secrets
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+
+from capabilities.sandbox.services import SERVICES, Service, record_for
 
 ROOT = Path(__file__).parent
 app = FastAPI(title="Harbor Ledger — synthetic banking sandbox", docs_url=None, redoc_url=None)
@@ -38,6 +41,9 @@ class Session:
     member: str = ""
     restored: bool = False
     acknowledged: bool = False
+    service: str = ""
+    record: dict[str, str] = field(default_factory=dict)
+    reference: str = ""
 
 
 sessions: dict[str, Session] = {}
@@ -57,6 +63,7 @@ def render(request: Request, screen: str, **values: object) -> HTMLResponse:
             "screen": screen,
             "state": state,
             "member_name": MEMBERS.get(state.member, ""),
+            "services": SERVICES.values(),
             **values,
         },
     )
@@ -87,6 +94,8 @@ async def search(
     request: Request, member_id: Annotated[str, Form()]
 ) -> HTMLResponse | RedirectResponse:
     state = session(request)
+    state.member, state.service, state.reference = "", "", ""
+    state.record.clear()
     if not member_id.isdigit() or len(member_id) != 5:
         return render(request, "Validation error")
     if member_id not in MEMBERS:
@@ -143,3 +152,92 @@ async def review(
 async def commit(request: Request) -> HTMLResponse:
     # Deliberately outside the automation allowlist. No real financial effect.
     return render(request, "Account created — synthetic fixture only")
+
+
+def service_context(request: Request, slug: str) -> tuple[Service, Session]:
+    service = SERVICES.get(slug)
+    if service is None:
+        raise HTTPException(404, "Unknown service")
+    state = session(request)
+    if state.member not in MEMBERS:
+        raise HTTPException(409, "Find a member before servicing a record")
+    return service, state
+
+
+@app.get("/workspace/services/{slug}", response_class=HTMLResponse)
+async def service_home(request: Request, slug: str) -> HTMLResponse:
+    service, state = service_context(request, slug)
+    state.service, state.reference = slug, ""
+    state.record = {} if service.lookup_name else record_for(service, state.member, "") or {}
+    return render(
+        request,
+        service.title if service.lookup_name else service.detail_screen,
+        service=service,
+        stage="lookup" if service.lookup_name else "detail",
+    )
+
+
+@app.post("/workspace/services/{slug}/lookup", response_class=HTMLResponse)
+async def service_lookup(request: Request, slug: str) -> HTMLResponse:
+    service, state = service_context(request, slug)
+    values = await request.form()
+    reference = values.get(service.lookup_name)
+    state.service, state.record, state.reference = slug, {}, ""
+    if not isinstance(reference, str) or len(reference) > 80:
+        return render(request, "Validation error")
+    record = record_for(service, state.member, reference)
+    if record is None:
+        return render(request, "Service record not found")
+    if reference.endswith("-HOLD"):
+        return render(request, "Request not eligible", record=record)
+    state.record, state.reference = record, reference
+    return render(request, service.detail_screen, service=service, stage="detail")
+
+
+@app.get("/workspace/services/{slug}/prepare", response_class=HTMLResponse)
+async def service_prepare(request: Request, slug: str) -> HTMLResponse:
+    service, state = service_context(request, slug)
+    if state.service != slug or not state.record:
+        return render(request, "Service record not found")
+    return render(request, service.prepare_screen, service=service, stage="prepare")
+
+
+@app.post("/workspace/services/{slug}/review", response_class=HTMLResponse)
+async def service_review(request: Request, slug: str) -> HTMLResponse:
+    service, state = service_context(request, slug)
+    if state.service != slug or not state.record:
+        return render(request, "Service record not found")
+    form = await request.form()
+    values: dict[str, str] = {}
+    for item in service.fields:
+        value = form.get(item.name)
+        if (
+            not isinstance(value, str)
+            or not value.strip()
+            or len(value) > 80
+            or any(ord(char) < 32 for char in value)
+            or (item.choices and value not in item.choices)
+        ):
+            return render(request, "Validation error")
+        values[item.name] = value
+    if slug == "address-change" and (
+        not re.fullmatch(r"[A-Z]{2}", values["region"])
+        or not re.fullmatch(r"[0-9]{5}", values["postal_code"])
+    ):
+        return render(request, "Validation error")
+    if state.scenario == "validation":
+        return render(request, "Validation error")
+    rows = {
+        "Member reference": state.member,
+        **state.record,
+        **{item.label: values[item.name] for item in service.fields},
+        "Status": "Ready for review",
+    }
+    return render(request, service.review_screen, service=service, stage="review", rows=rows)
+
+
+@app.post("/workspace/services/{slug}/commit", response_class=HTMLResponse)
+async def service_commit(request: Request, slug: str) -> HTMLResponse:
+    service_context(request, slug)
+    # Even manual exploration cannot produce a real or simulated financial mutation.
+    return render(request, "Submission unavailable in training")

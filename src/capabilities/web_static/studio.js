@@ -3,6 +3,7 @@ const $ = (id) => document.getElementById(id);
 const csrf = document.querySelector('meta[name="studio-csrf"]').content;
 let mode = "replay",
   catalog = [],
+  workflows = [],
   providers = {},
   current = null,
   activeId = null;
@@ -53,7 +54,7 @@ function isActive() {
 function providerStatus() {
   const ready = providers[$("provider").value];
   $("provider-status").textContent = ready
-    ? "Key configured locally. Discovery uses API quota and may take 1–3 minutes."
+    ? "Key configured locally. Discovery uses API quota and may take 2–5 minutes."
     : "No local key configured. Replay remains available without a key.";
 }
 function setMode(next) {
@@ -69,44 +70,161 @@ function setMode(next) {
       : "AI starts from the goal and live screen. Verified success adds a new capability to the library.";
   $("start").textContent =
     mode === "replay" ? "▶  Run capability" : "✦  Discover and save";
-  document.querySelector('label[for="capability"]').textContent =
-    mode === "replay" ? "Saved capability" : "Workflow goal contract";
+  $("saved-capability-field").hidden = mode === "discover";
+  $("capability").disabled = mode === "discover";
   renderArtifact();
   providerStatus();
 }
-async function loadCatalog(preferRunId = null) {
-  const data = await api("/catalog");
-  catalog = data.capabilities;
-  providers = data.providers;
-  const previous = $("capability").value;
-  $("capability").replaceChildren(
-    ...catalog.map((c, i) => {
-      const option = element(
-        "option",
-        `${i === 0 ? "Prepared sub-account review" : "Discovery · " + c.provenance.run_id.slice(-6)}`,
+function workflow() {
+  return workflows.find((w) => w.id === $("workflow").value);
+}
+function canStart() {
+  return (
+    !isActive() &&
+    !starting &&
+    !!workflow() &&
+    (mode === "discover" || !!selected())
+  );
+}
+function renderLibrary() {
+  $("library-count").textContent =
+    `${workflows.length} workflows · ${catalog.length} saved capabilities`;
+  $("workflow-cards").replaceChildren(
+    ...workflows.map((w) => {
+      const count = catalog.filter((c) => c.workflow_id === w.id).length;
+      const button = element("button", undefined, "workflow-card");
+      button.type = "button";
+      button.classList.toggle("selected", w.id === workflow()?.id);
+      button.setAttribute("aria-pressed", String(w.id === workflow()?.id));
+      button.append(
+        element("span", w.department, "eyebrow"),
+        element("strong", w.title),
+        element("span", w.description, "workflow-summary"),
+        element(
+          "span",
+          count
+            ? `${count} saved · ready to replay`
+            : "Discover to create a capability",
+          "workflow-badge",
+        ),
       );
+      button.addEventListener("click", () => {
+        $("workflow").value = w.id;
+        changeWorkflow();
+      });
+      return button;
+    }),
+  );
+}
+function renderInputs(example = null) {
+  const w = workflow();
+  if (!w) return;
+  const values = example || w.examples[0];
+  $("workflow-inputs").replaceChildren(
+    ...Object.entries(w.contract.inputs).map(([name, spec]) => {
+      const row = element("div", undefined, "workflow-input");
+      const id = name === "member_id" ? "member-id" : name;
+      const label = element("label", w.labels[name]);
+      label.htmlFor = id;
+      const input = element(spec.choices.length ? "select" : "input");
+      input.id = id;
+      input.name = name;
+      input.required = true;
+      if (spec.choices.length)
+        input.replaceChildren(
+          ...spec.choices.map((value) => element("option", value)),
+        );
+      else {
+        input.maxLength = spec.max_length;
+        input.autocomplete = "off";
+      }
+      if (spec.format === "member_id") {
+        input.pattern = "[0-9]{5}";
+        input.inputMode = "numeric";
+        input.maxLength = 5;
+      }
+      input.value = values[name] || "";
+      row.append(label, input);
+      return row;
+    }),
+  );
+}
+function renderCapabilityOptions(preferId = null) {
+  const previous = preferId || $("capability").value;
+  const matches = catalog.filter((c) => c.workflow_id === workflow()?.id);
+  $("capability").replaceChildren(
+    ...matches.map((c) => {
+      const label =
+        c.provenance.run_id === "discover-2acef308bd9c"
+          ? "Prepared sub-account review"
+          : `${c.provenance.source === "llm_discovery" ? "AI discovery" : "Test fixture"} · ${c.provenance.run_id.slice(-6)}`;
+      const option = element("option", label);
       option.value = c.id;
       return option;
     }),
   );
+  if (matches.some((c) => c.id === previous)) $("capability").value = previous;
+  if (!matches.length)
+    $("capability").append(element("option", "No saved capability yet"));
+  renderArtifact();
+}
+function changeWorkflow() {
+  renderInputs();
+  renderCapabilityOptions();
+  if (!selected()) setMode("discover");
+  renderLibrary();
+}
+async function loadCatalog(preferRunId = null) {
+  const data = await api("/catalog");
+  catalog = data.capabilities;
+  workflows = data.workflows;
+  providers = data.providers;
+  const previousWorkflow = $("workflow").value;
   const created = catalog.find((c) => c.provenance.run_id === preferRunId);
-  if (created) $("capability").value = created.id;
-  else if (catalog.some((c) => c.id === previous))
-    $("capability").value = previous;
+  $("workflow").replaceChildren(
+    ...workflows.map((w) => {
+      const option = element("option", w.title);
+      option.value = w.id;
+      return option;
+    }),
+  );
+  $("workflow").value =
+    created?.workflow_id || previousWorkflow || workflows[0]?.id || "";
+  if (
+    !$("workflow-inputs").children.length ||
+    $("workflow").value !== previousWorkflow
+  )
+    renderInputs();
+  renderCapabilityOptions(created?.id);
+  renderLibrary();
   $("sandbox-link").href = data.bank_origin;
   $("sandbox-link").title =
     "Opens an independent manual banking session. The engine's session is shown in the live view.";
-  renderArtifact();
   providerStatus();
 }
 function renderArtifact() {
-  const cap = selected();
-  if (!cap) return;
+  const cap = selected(),
+    w = workflow();
+  const visualOption = $("scenario").querySelector(
+    'option[value="visual_missing"]',
+  );
+  visualOption.disabled = w?.id !== "subaccount";
+  if (visualOption.disabled && $("scenario").value === "visual_missing")
+    $("scenario").value = "normal";
+  $("workflow-description").textContent = w?.description || "";
+  $("goal-description").textContent = w?.goal || "";
   $("capability-meta").textContent =
-    `v${cap.version} · ${cap.steps} UI actions · ${cap.provenance.source === "llm_discovery" ? "AI-discovered" : "Authored example"}`;
-  $("artifact-json").textContent = JSON.stringify(cap.artifact, null, 2);
+    mode === "discover"
+      ? "Goal and output checks only. AI chooses the action sequence."
+      : cap
+        ? `v${cap.version} · ${cap.steps} UI actions · ${cap.provenance.source === "llm_discovery" ? "AI-discovered" : "Test fixture"}`
+        : "Discover this workflow first to enable replay.";
+  $("artifact-json").textContent = cap
+    ? JSON.stringify(cap.artifact, null, 2)
+    : "No saved capability. A verified discovery will create one.";
+  $("download-artifact").disabled = !cap;
   $("artifact-steps").replaceChildren(
-    ...cap.artifact.steps.map((step, i) => {
+    ...(cap?.artifact.steps || []).map((step, i) => {
       const row = element("div", undefined, "artifact-step");
       row.append(
         element("b", String(i + 1).padStart(2, "0")),
@@ -117,6 +235,7 @@ function renderArtifact() {
       return row;
     }),
   );
+  $("start").disabled = !canStart();
 }
 function chooseTab(id) {
   document
@@ -217,7 +336,7 @@ function renderResult(result) {
         : "Run stopped safely";
   $("result-message").textContent =
     result.status === "success"
-      ? "The engine checked these values against the actual banking UI. No account was created."
+      ? "The engine checked these values against the actual banking UI. No banking record was changed or request submitted."
       : (result.outcome || result.error?.code || "Unknown result").replaceAll(
           "_",
           " ",
@@ -257,7 +376,7 @@ function renderState(state) {
   $("live-status").textContent = isActive()
     ? "● Live session"
     : "Final session view";
-  $("start").disabled = isActive() || starting;
+  $("start").disabled = !canStart();
   $("stop").hidden = !isActive();
   $("takeover").hidden = !waiting;
   $("human-tools").hidden = owner !== "human";
@@ -315,7 +434,10 @@ async function history() {
       const button = element("button", undefined, "history-row");
       button.append(
         element("span", run.id),
-        element("strong", run.mode === "discover" ? "AI discovery" : "Replay"),
+        element(
+          "strong",
+          `${run.workflow_title} · ${run.mode === "discover" ? "AI discovery" : "Replay"}`,
+        ),
         element("span", statusLabels[run.status] || run.status),
       );
       button.disabled = isActive() && run.id !== activeId;
@@ -358,18 +480,28 @@ $("run-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   if (starting || isActive()) return;
   starting = true;
+  activeId = null;
+  current = null;
+  $("run-status").textContent = "Starting";
+  $("run-status").className = "";
+  $("action-count").textContent = "0";
+  $("model-count").textContent = "0";
+  $("elapsed").textContent = "0.0s";
+  $("browser-image").hidden = true;
+  $("empty-state").hidden = false;
+  $("empty-state").querySelector("h2").textContent =
+    "Opening the banking session…";
+  renderResult(null);
+  renderEvents([]);
   $("start").disabled = true;
   error();
   try {
     const state = await api("/runs", {
       mode,
-      capability_id: $("capability").value,
+      workflow_id: workflow().id,
+      ...(mode === "replay" ? { capability_id: selected().id } : {}),
       provider: $("provider").value,
-      inputs: {
-        member_id: $("member-id").value,
-        product: $("product").value,
-        nickname: $("nickname").value,
-      },
+      inputs: Object.fromEntries(new FormData($("run-form"))),
       scenario: $("scenario").value,
     });
     activeId = state.id;
@@ -382,7 +514,7 @@ $("run-form").addEventListener("submit", async (event) => {
     error(e.message);
   } finally {
     starting = false;
-    $("start").disabled = isActive();
+    $("start").disabled = !canStart();
   }
 });
 async function command(path, body) {
@@ -441,6 +573,13 @@ $("replay-mode").addEventListener("click", () => setMode("replay"));
 $("discover-mode").addEventListener("click", () => setMode("discover"));
 $("provider").addEventListener("change", providerStatus);
 $("capability").addEventListener("change", renderArtifact);
+$("workflow").addEventListener("change", changeWorkflow);
+$("example-first").addEventListener("click", () =>
+  renderInputs(workflow().examples[0]),
+);
+$("example-second").addEventListener("click", () =>
+  renderInputs(workflow().examples[1]),
+);
 document
   .querySelectorAll(".detail-tabs button")
   .forEach((button) =>
@@ -452,7 +591,7 @@ $("scenario").addEventListener("change", () => {
     "unexpected_dialog",
   ].includes($("scenario").value)
     ? "The engine pauses. Claim the session, resolve the interruption in the live view, then return control."
-    : "The run stops at the review screen. It never creates an account.";
+    : "The run prepares a review. It does not submit requests or change banking records.";
 });
 $("download-artifact").addEventListener("click", () => {
   const cap = selected();
@@ -464,7 +603,7 @@ $("download-artifact").addEventListener("click", () => {
   );
   const link = element("a");
   link.href = url;
-  link.download = "prepare-subaccount.capability.json";
+  link.download = `${cap.workflow_id}.capability.json`;
   link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 });

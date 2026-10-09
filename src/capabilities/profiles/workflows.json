@@ -1,0 +1,1308 @@
+[
+  {
+    "id": "subaccount",
+    "title": "Sub-account review",
+    "department": "Accounts",
+    "description": "Prepare a new Savings or Checking sub-account request and verify the review.",
+    "goal": "Find the supplied member, prepare the requested sub-account with the supplied nickname, and stop at the review screen.",
+    "contract": {
+      "name": "prepare_subaccount_review",
+      "inputs": {
+        "member_id": {
+          "type": "string",
+          "description": "Synthetic five-digit member reference",
+          "format": "member_id",
+          "choices": [],
+          "sensitive": true,
+          "max_length": 80
+        },
+        "product": {
+          "type": "string",
+          "description": "Requested sub-account product",
+          "format": "text",
+          "choices": [
+            "Savings",
+            "Checking"
+          ],
+          "sensitive": false,
+          "max_length": 80
+        },
+        "nickname": {
+          "type": "string",
+          "description": "User-chosen sub-account nickname",
+          "format": "text",
+          "choices": [],
+          "sensitive": true,
+          "max_length": 80
+        }
+      },
+      "outputs": {
+        "member_id": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Member reference",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "product": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Product",
+            "scope": "workspace"
+          },
+          "sensitive": false,
+          "true_when": null
+        },
+        "nickname": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Nickname",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "review_ready": {
+          "type": "boolean",
+          "target": {
+            "kind": "field",
+            "name": "Status",
+            "scope": "workspace"
+          },
+          "sensitive": false,
+          "true_when": "Ready for review"
+        }
+      },
+      "success_screen": "Review sub-account",
+      "checks": [
+        {
+          "target": {
+            "kind": "field",
+            "name": "Member reference",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "member_id"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Product",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "product"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Nickname",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "nickname"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Status",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "constant",
+            "value": "Ready for review"
+          }
+        }
+      ]
+    },
+    "labels": {
+      "member_id": "Member ID",
+      "product": "Product",
+      "nickname": "Account nickname"
+    },
+    "examples": [
+      {
+        "member_id": "10023",
+        "product": "Savings",
+        "nickname": "Emergency Fund"
+      },
+      {
+        "member_id": "10042",
+        "product": "Checking",
+        "nickname": "Travel Fund"
+      }
+    ]
+  },
+  {
+    "id": "card-replacement",
+    "title": "Card replacement",
+    "department": "Cards",
+    "description": "Locate a member-owned card and stage replacement preferences.",
+    "goal": "Find the supplied member. Locate a member-owned card and stage replacement preferences. Use the supplied inputs. Stop only at Review card replacement with all requested fields matching; do not submit or approve the request.",
+    "contract": {
+      "name": "prepare_card_replacement_review",
+      "inputs": {
+        "member_id": {
+          "type": "string",
+          "description": "Synthetic five-digit member reference",
+          "format": "member_id",
+          "choices": [],
+          "sensitive": true,
+          "max_length": 80
+        },
+        "card_reference": {
+          "type": "string",
+          "description": "Card reference",
+          "format": "text",
+          "choices": [],
+          "sensitive": true,
+          "max_length": 80
+        },
+        "replacement_reason": {
+          "type": "string",
+          "description": "Replacement reason",
+          "format": "text",
+          "choices": [
+            "Damaged",
+            "Lost",
+            "Stolen"
+          ],
+          "sensitive": false,
+          "max_length": 80
+        },
+        "replacement_delivery": {
+          "type": "string",
+          "description": "Replacement delivery",
+          "format": "text",
+          "choices": [
+            "Branch pickup",
+            "Registered address"
+          ],
+          "sensitive": false,
+          "max_length": 80
+        }
+      },
+      "outputs": {
+        "member_id": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Member reference",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "card_reference": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Card reference",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "replacement_reason": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Replacement reason",
+            "scope": "workspace"
+          },
+          "sensitive": false,
+          "true_when": null
+        },
+        "replacement_delivery": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Replacement delivery",
+            "scope": "workspace"
+          },
+          "sensitive": false,
+          "true_when": null
+        },
+        "card_product": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Card product",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "card_standing": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Card standing",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "review_ready": {
+          "type": "boolean",
+          "target": {
+            "kind": "field",
+            "name": "Status",
+            "scope": "workspace"
+          },
+          "sensitive": false,
+          "true_when": "Ready for review"
+        }
+      },
+      "success_screen": "Review card replacement",
+      "checks": [
+        {
+          "target": {
+            "kind": "field",
+            "name": "Member reference",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "member_id"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Card reference",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "card_reference"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Replacement reason",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "replacement_reason"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Replacement delivery",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "replacement_delivery"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Status",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "constant",
+            "value": "Ready for review"
+          }
+        }
+      ]
+    },
+    "labels": {
+      "member_id": "Member ID",
+      "card_reference": "Card reference",
+      "replacement_reason": "Replacement reason",
+      "replacement_delivery": "Replacement delivery"
+    },
+    "examples": [
+      {
+        "member_id": "10023",
+        "card_reference": "CARD-10023",
+        "replacement_reason": "Damaged",
+        "replacement_delivery": "Branch pickup"
+      },
+      {
+        "member_id": "10042",
+        "card_reference": "CARD-10042",
+        "replacement_reason": "Lost",
+        "replacement_delivery": "Registered address"
+      }
+    ]
+  },
+  {
+    "id": "transaction-dispute",
+    "title": "Transaction dispute",
+    "department": "Payments",
+    "description": "Locate a posted transaction and prepare a dispute intake for investigation.",
+    "goal": "Find the supplied member. Locate a posted transaction and prepare a dispute intake for investigation. Use the supplied inputs. Stop only at Review transaction dispute with all requested fields matching; do not submit or approve the request.",
+    "contract": {
+      "name": "prepare_transaction_dispute_review",
+      "inputs": {
+        "member_id": {
+          "type": "string",
+          "description": "Synthetic five-digit member reference",
+          "format": "member_id",
+          "choices": [],
+          "sensitive": true,
+          "max_length": 80
+        },
+        "transaction_reference": {
+          "type": "string",
+          "description": "Transaction reference",
+          "format": "text",
+          "choices": [],
+          "sensitive": true,
+          "max_length": 80
+        },
+        "dispute_reason": {
+          "type": "string",
+          "description": "Dispute reason",
+          "format": "text",
+          "choices": [
+            "Duplicate charge",
+            "Service not received",
+            "Unrecognized transaction"
+          ],
+          "sensitive": false,
+          "max_length": 80
+        },
+        "contact_channel": {
+          "type": "string",
+          "description": "Contact channel",
+          "format": "text",
+          "choices": [
+            "Secure message",
+            "Phone"
+          ],
+          "sensitive": false,
+          "max_length": 80
+        }
+      },
+      "outputs": {
+        "member_id": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Member reference",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "transaction_reference": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Transaction reference",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "dispute_reason": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Dispute reason",
+            "scope": "workspace"
+          },
+          "sensitive": false,
+          "true_when": null
+        },
+        "contact_channel": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Contact channel",
+            "scope": "workspace"
+          },
+          "sensitive": false,
+          "true_when": null
+        },
+        "merchant": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Merchant",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "transaction_amount": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Transaction amount",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "transaction_status": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Transaction status",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "review_ready": {
+          "type": "boolean",
+          "target": {
+            "kind": "field",
+            "name": "Status",
+            "scope": "workspace"
+          },
+          "sensitive": false,
+          "true_when": "Ready for review"
+        }
+      },
+      "success_screen": "Review transaction dispute",
+      "checks": [
+        {
+          "target": {
+            "kind": "field",
+            "name": "Member reference",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "member_id"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Transaction reference",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "transaction_reference"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Dispute reason",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "dispute_reason"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Contact channel",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "contact_channel"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Status",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "constant",
+            "value": "Ready for review"
+          }
+        }
+      ]
+    },
+    "labels": {
+      "member_id": "Member ID",
+      "transaction_reference": "Transaction reference",
+      "dispute_reason": "Dispute reason",
+      "contact_channel": "Contact channel"
+    },
+    "examples": [
+      {
+        "member_id": "10023",
+        "transaction_reference": "TXN-10023",
+        "dispute_reason": "Duplicate charge",
+        "contact_channel": "Secure message"
+      },
+      {
+        "member_id": "10042",
+        "transaction_reference": "TXN-10042",
+        "dispute_reason": "Service not received",
+        "contact_channel": "Phone"
+      }
+    ]
+  },
+  {
+    "id": "address-change",
+    "title": "Address change",
+    "department": "Member profile",
+    "description": "Stage a new mailing address and verification route without changing the live record.",
+    "goal": "Find the supplied member. Stage a new mailing address and verification route without changing the live record. Use the supplied inputs. Stop only at Review address change with all requested fields matching; do not submit or approve the request.",
+    "contract": {
+      "name": "prepare_address_change_review",
+      "inputs": {
+        "member_id": {
+          "type": "string",
+          "description": "Synthetic five-digit member reference",
+          "format": "member_id",
+          "choices": [],
+          "sensitive": true,
+          "max_length": 80
+        },
+        "street": {
+          "type": "string",
+          "description": "Street address",
+          "format": "text",
+          "choices": [],
+          "sensitive": true,
+          "max_length": 80
+        },
+        "city": {
+          "type": "string",
+          "description": "City",
+          "format": "text",
+          "choices": [],
+          "sensitive": true,
+          "max_length": 80
+        },
+        "region": {
+          "type": "string",
+          "description": "State code",
+          "format": "text",
+          "choices": [],
+          "sensitive": true,
+          "max_length": 80
+        },
+        "postal_code": {
+          "type": "string",
+          "description": "Postal code",
+          "format": "text",
+          "choices": [],
+          "sensitive": true,
+          "max_length": 80
+        },
+        "verification_method": {
+          "type": "string",
+          "description": "Verification method",
+          "format": "text",
+          "choices": [
+            "Branch verification",
+            "Callback verification"
+          ],
+          "sensitive": false,
+          "max_length": 80
+        }
+      },
+      "outputs": {
+        "member_id": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Member reference",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "street": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Street address",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "city": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "City",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "region": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "State code",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "postal_code": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Postal code",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "verification_method": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Verification method",
+            "scope": "workspace"
+          },
+          "sensitive": false,
+          "true_when": null
+        },
+        "current_mailing_address": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Current mailing address",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "current_city": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Current city",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "contact_standing": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Contact standing",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "review_ready": {
+          "type": "boolean",
+          "target": {
+            "kind": "field",
+            "name": "Status",
+            "scope": "workspace"
+          },
+          "sensitive": false,
+          "true_when": "Ready for review"
+        }
+      },
+      "success_screen": "Review address change",
+      "checks": [
+        {
+          "target": {
+            "kind": "field",
+            "name": "Member reference",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "member_id"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Street address",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "street"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "City",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "city"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "State code",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "region"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Postal code",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "postal_code"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Verification method",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "verification_method"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Status",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "constant",
+            "value": "Ready for review"
+          }
+        }
+      ]
+    },
+    "labels": {
+      "member_id": "Member ID",
+      "street": "Street address",
+      "city": "City",
+      "region": "State code",
+      "postal_code": "Postal code",
+      "verification_method": "Verification method"
+    },
+    "examples": [
+      {
+        "member_id": "10023",
+        "street": "45 Market Street",
+        "city": "San Francisco",
+        "region": "CA",
+        "postal_code": "94105",
+        "verification_method": "Branch verification"
+      },
+      {
+        "member_id": "10042",
+        "street": "280 Pine Avenue",
+        "city": "Austin",
+        "region": "TX",
+        "postal_code": "78701",
+        "verification_method": "Callback verification"
+      }
+    ]
+  },
+  {
+    "id": "statement-request",
+    "title": "Statement request",
+    "department": "Documents",
+    "description": "Locate an eligible account and prepare statement period, format, and delivery preferences.",
+    "goal": "Find the supplied member. Locate an eligible account and prepare statement period, format, and delivery preferences. Use the supplied inputs. Stop only at Review statement request with all requested fields matching; do not submit or approve the request.",
+    "contract": {
+      "name": "prepare_statement_request_review",
+      "inputs": {
+        "member_id": {
+          "type": "string",
+          "description": "Synthetic five-digit member reference",
+          "format": "member_id",
+          "choices": [],
+          "sensitive": true,
+          "max_length": 80
+        },
+        "account_reference": {
+          "type": "string",
+          "description": "Account reference",
+          "format": "text",
+          "choices": [],
+          "sensitive": true,
+          "max_length": 80
+        },
+        "statement_period": {
+          "type": "string",
+          "description": "Statement period",
+          "format": "text",
+          "choices": [
+            "September 2026",
+            "August 2026"
+          ],
+          "sensitive": false,
+          "max_length": 80
+        },
+        "document_format": {
+          "type": "string",
+          "description": "Document format",
+          "format": "text",
+          "choices": [
+            "PDF",
+            "Paper copy"
+          ],
+          "sensitive": false,
+          "max_length": 80
+        },
+        "document_delivery": {
+          "type": "string",
+          "description": "Document delivery",
+          "format": "text",
+          "choices": [
+            "Secure inbox",
+            "Branch collection"
+          ],
+          "sensitive": false,
+          "max_length": 80
+        }
+      },
+      "outputs": {
+        "member_id": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Member reference",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "account_reference": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Account reference",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "statement_period": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Statement period",
+            "scope": "workspace"
+          },
+          "sensitive": false,
+          "true_when": null
+        },
+        "document_format": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Document format",
+            "scope": "workspace"
+          },
+          "sensitive": false,
+          "true_when": null
+        },
+        "document_delivery": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Document delivery",
+            "scope": "workspace"
+          },
+          "sensitive": false,
+          "true_when": null
+        },
+        "account_product": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Account product",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "document_access": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Document access",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "review_ready": {
+          "type": "boolean",
+          "target": {
+            "kind": "field",
+            "name": "Status",
+            "scope": "workspace"
+          },
+          "sensitive": false,
+          "true_when": "Ready for review"
+        }
+      },
+      "success_screen": "Review statement request",
+      "checks": [
+        {
+          "target": {
+            "kind": "field",
+            "name": "Member reference",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "member_id"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Account reference",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "account_reference"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Statement period",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "statement_period"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Document format",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "document_format"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Document delivery",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "document_delivery"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Status",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "constant",
+            "value": "Ready for review"
+          }
+        }
+      ]
+    },
+    "labels": {
+      "member_id": "Member ID",
+      "account_reference": "Account reference",
+      "statement_period": "Statement period",
+      "document_format": "Document format",
+      "document_delivery": "Document delivery"
+    },
+    "examples": [
+      {
+        "member_id": "10023",
+        "account_reference": "ACC-10023",
+        "statement_period": "September 2026",
+        "document_format": "PDF",
+        "document_delivery": "Secure inbox"
+      },
+      {
+        "member_id": "10042",
+        "account_reference": "ACC-10042",
+        "statement_period": "August 2026",
+        "document_format": "Paper copy",
+        "document_delivery": "Branch collection"
+      }
+    ]
+  },
+  {
+    "id": "fee-adjustment",
+    "title": "Fee adjustment",
+    "department": "Service requests",
+    "description": "Locate an assessed fee and prepare a review request; no waiver is applied.",
+    "goal": "Find the supplied member. Locate an assessed fee and prepare a review request; no waiver is applied. Use the supplied inputs. Stop only at Review fee adjustment with all requested fields matching; do not submit or approve the request.",
+    "contract": {
+      "name": "prepare_fee_adjustment_review",
+      "inputs": {
+        "member_id": {
+          "type": "string",
+          "description": "Synthetic five-digit member reference",
+          "format": "member_id",
+          "choices": [],
+          "sensitive": true,
+          "max_length": 80
+        },
+        "fee_reference": {
+          "type": "string",
+          "description": "Fee reference",
+          "format": "text",
+          "choices": [],
+          "sensitive": true,
+          "max_length": 80
+        },
+        "adjustment_reason": {
+          "type": "string",
+          "description": "Adjustment reason",
+          "format": "text",
+          "choices": [
+            "First occurrence",
+            "Service issue",
+            "Incorrect assessment"
+          ],
+          "sensitive": false,
+          "max_length": 80
+        },
+        "requested_resolution": {
+          "type": "string",
+          "description": "Requested resolution",
+          "format": "text",
+          "choices": [
+            "Full waiver",
+            "Partial waiver"
+          ],
+          "sensitive": false,
+          "max_length": 80
+        },
+        "supporting_note": {
+          "type": "string",
+          "description": "Supporting note",
+          "format": "text",
+          "choices": [],
+          "sensitive": true,
+          "max_length": 80
+        }
+      },
+      "outputs": {
+        "member_id": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Member reference",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "fee_reference": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Fee reference",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "adjustment_reason": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Adjustment reason",
+            "scope": "workspace"
+          },
+          "sensitive": false,
+          "true_when": null
+        },
+        "requested_resolution": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Requested resolution",
+            "scope": "workspace"
+          },
+          "sensitive": false,
+          "true_when": null
+        },
+        "supporting_note": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Supporting note",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "fee_type": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Fee type",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "fee_amount": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Fee amount",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "fee_standing": {
+          "type": "string",
+          "target": {
+            "kind": "field",
+            "name": "Fee standing",
+            "scope": "workspace"
+          },
+          "sensitive": true,
+          "true_when": null
+        },
+        "review_ready": {
+          "type": "boolean",
+          "target": {
+            "kind": "field",
+            "name": "Status",
+            "scope": "workspace"
+          },
+          "sensitive": false,
+          "true_when": "Ready for review"
+        }
+      },
+      "success_screen": "Review fee adjustment",
+      "checks": [
+        {
+          "target": {
+            "kind": "field",
+            "name": "Member reference",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "member_id"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Fee reference",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "fee_reference"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Adjustment reason",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "adjustment_reason"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Requested resolution",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "requested_resolution"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Supporting note",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "input",
+            "name": "supporting_note"
+          }
+        },
+        {
+          "target": {
+            "kind": "field",
+            "name": "Status",
+            "scope": "workspace"
+          },
+          "equals": {
+            "kind": "constant",
+            "value": "Ready for review"
+          }
+        }
+      ]
+    },
+    "labels": {
+      "member_id": "Member ID",
+      "fee_reference": "Fee reference",
+      "adjustment_reason": "Adjustment reason",
+      "requested_resolution": "Requested resolution",
+      "supporting_note": "Supporting note"
+    },
+    "examples": [
+      {
+        "member_id": "10023",
+        "fee_reference": "FEE-10023",
+        "adjustment_reason": "First occurrence",
+        "requested_resolution": "Full waiver",
+        "supporting_note": "First fee review requested by member"
+      },
+      {
+        "member_id": "10042",
+        "fee_reference": "FEE-10042",
+        "adjustment_reason": "Service issue",
+        "requested_resolution": "Partial waiver",
+        "supporting_note": "Service issue reported to branch"
+      }
+    ]
+  }
+]

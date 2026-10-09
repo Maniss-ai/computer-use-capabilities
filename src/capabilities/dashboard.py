@@ -30,6 +30,7 @@ from capabilities.errors import ExecutionError
 from capabilities.evidence import Evidence, capability_digest
 from capabilities.session import SessionController
 from capabilities.surface import SCREENS, BrowserSurface
+from capabilities.workflows import Workflow, workflow_for_goal, workflows
 
 PACKAGE = Path(__file__).parent
 GOAL = "Find the supplied member, prepare the requested sub-account with the supplied nickname, and stop at the review screen."
@@ -50,7 +51,8 @@ Scenario = Literal[
 
 class StartRun(Contract):
     mode: Literal["replay", "discover"] = "replay"
-    capability_id: str = Field(pattern=r"^[a-f0-9]{64}$")
+    capability_id: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
+    workflow_id: str | None = Field(default=None, pattern=r"^[a-z][a-z-]{0,40}$")
     inputs: dict[str, str]
     scenario: Scenario = "normal"
     provider: Literal["gemini", "anthropic"] = "gemini"
@@ -85,7 +87,8 @@ class PreviewSurface(BrowserSurface):
 class WebRun:
     evidence: Evidence
     request: StartRun
-    capability: Capability
+    capability: Capability | None
+    workflow: Workflow
     control: SessionController
     surface: BrowserSurface
     status: str = "starting"
@@ -113,6 +116,8 @@ class WebRun:
         return {
             "id": self.evidence.run_id,
             "mode": self.request.mode,
+            "workflow_id": self.workflow.id,
+            "workflow_title": self.workflow.title,
             "status": self.status,
             "screen": self.screen,
             "control": self.control.state(),
@@ -147,6 +152,7 @@ class RunManager:
         for path in paths:
             try:
                 artifact = Capability.model_validate_json(path.read_text())
+                workflow_for_goal(artifact.goal)
                 if artifact.profile == "harbor-ledger/v1":
                     catalog[capability_digest(artifact)] = artifact
             except (ValueError, OSError):
@@ -157,15 +163,28 @@ class RunManager:
         async with self.lock:
             if any(run.task and not run.task.done() for run in self.runs.values()):
                 raise HTTPException(409, "A run is already active. Finish or stop it first.")
-            capability = self.catalog().get(request.capability_id)
-            if capability is None:
+            capability = self.catalog().get(request.capability_id or "")
+            if request.capability_id and capability is None:
                 raise HTTPException(404, "Capability not found")
+            workflow = (
+                workflows().get(request.workflow_id)
+                if request.workflow_id
+                else workflow_for_goal(capability.goal)
+                if capability
+                else None
+            )
+            if workflow is None:
+                raise HTTPException(404, "Workflow not found")
+            if request.mode == "replay" and capability is None:
+                raise HTTPException(422, "Discover this workflow before replaying it.")
+            if capability and capability.goal != workflow.contract:
+                raise HTTPException(422, "Capability does not belong to the selected workflow.")
             try:
-                inputs = capability.goal.validate_inputs(dict(request.inputs))
+                inputs = workflow.contract.validate_inputs(dict(request.inputs))
             except ValueError:
                 raise HTTPException(
                     422,
-                    "Use a five-digit member ID, Savings or Checking, and a nonempty nickname (up to 80 characters).",
+                    "Check the workflow inputs: use a five-digit member ID and valid nonempty field values.",
                 ) from None
             key = ""
             if request.mode == "discover":
@@ -184,14 +203,17 @@ class RunManager:
             evidence = Evidence(
                 self.root,
                 run_id,
-                [key, *(inputs[k] for k, spec in capability.goal.inputs.items() if spec.sensitive)],
+                [
+                    key,
+                    *(inputs[k] for k, spec in workflow.contract.inputs.items() if spec.sensitive),
+                ],
             )
             policy = load_policy(self.bank_origin)
             control = SessionController(evidence, policy.intervention_seconds, interactive=True)
             surface = PreviewSurface(
                 policy, evidence, control, channel=os.getenv("CAPABILITIES_BROWSER_CHANNEL")
             )
-            run = WebRun(evidence, request, capability, control, surface)
+            run = WebRun(evidence, request, capability, workflow, control, surface)
             self.runs[run_id] = run
             run.task = asyncio.create_task(self._execute(run, key))
             await asyncio.sleep(0)  # Enter its cleanup scope before accepting a stop request.
@@ -226,6 +248,7 @@ class RunManager:
             run.preview = asyncio.create_task(self._preview(run))
             executor = Executor(run.surface, run.surface.policy, run.control, run.evidence)
             if run.request.mode == "replay":
+                assert run.capability is not None
                 run.result = await ReplayEngine(executor).run(run.capability, run.request.inputs)
             else:
                 from capabilities.discovery import AnthropicPlanner, DiscoveryEngine
@@ -242,7 +265,7 @@ class RunManager:
                         key, os.getenv("CAPABILITIES_MODEL", "claude-sonnet-5-5"), run.evidence
                     )
                 run.result = await DiscoveryEngine(executor, run.planner).run(
-                    GOAL, run.capability.goal, run.request.inputs
+                    run.workflow.goal, run.workflow.contract, run.request.inputs
                 )
             run.status = run.result.status
             if run.result.status == "success":
@@ -352,6 +375,8 @@ def create_dashboard_app(origin: str, bank_origin: str, root: Path) -> FastAPI:
             "capabilities": [
                 {
                     "id": key,
+                    "workflow_id": workflow_for_goal(cap.goal).id,
+                    "title": workflow_for_goal(cap.goal).title,
                     "name": cap.goal.name,
                     "version": cap.capability_version,
                     "steps": len(cap.steps),
@@ -364,13 +389,20 @@ def create_dashboard_app(origin: str, bank_origin: str, root: Path) -> FastAPI:
                 name: bool(os.getenv(key))
                 for name, key in (("gemini", "GEMINI_API_KEY"), ("anthropic", "ANTHROPIC_API_KEY"))
             },
+            "workflows": [workflow.model_dump(mode="json") for workflow in workflows().values()],
             "bank_origin": bank_origin,
         }
 
     @api.get("/runs")
     async def runs() -> list[dict[str, Any]]:
         return [
-            {"id": r.evidence.run_id, "mode": r.request.mode, "status": r.status}
+            {
+                "id": r.evidence.run_id,
+                "mode": r.request.mode,
+                "status": r.status,
+                "workflow_id": r.workflow.id,
+                "workflow_title": r.workflow.title,
+            }
             for r in reversed(list(manager.runs.values()))
         ]
 

@@ -1,0 +1,18 @@
+{
+  "status": "success",
+  "run_id": "web-discover-bf5a37cf7ca2",
+  "outputs": {
+    "member_id": "[REDACTED]",
+    "transaction_reference": "[REDACTED]",
+    "dispute_reason": "Duplicate charge",
+    "contact_channel": "Secure message",
+    "merchant": "[REDACTED]",
+    "transaction_amount": "[REDACTED]",
+    "transaction_status": "[REDACTED]",
+    "review_ready": true
+  },
+  "outcome": null,
+  "error": null,
+  "model_calls": 10,
+  "human_interventions": 0
+}
