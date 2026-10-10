@@ -66,8 +66,9 @@ With an eligible Gemini API key configured in local `.env`, choose **Discover wi
 
 The model receives the goal contract and masked live observations. It does not receive the saved action
 sequence or sensitive parameter values. Watch model calls and actual actions appear in Activity. Free-tier
-requests are spaced out, so allow roughly 2–5 minutes. Provider errors or quota exhaustion stop visibly;
-there is no paid fallback or automatic retry.
+requests are spaced out, so allow roughly 2–5 minutes. Temporary model failures may retry the current
+decision once, at most twice across a run. Activity shows the retry; completed UI actions are preserved.
+Persistent errors and quota exhaustion stop visibly. There is no paid-provider fallback.
 
 After success, use **Use this capability with new inputs**. Change the member and nickname and run replay.
 Expect zero model calls. The newly generated capability also appears in the dropdown and remains

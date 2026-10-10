@@ -13,7 +13,8 @@ import uvicorn
 from playwright.async_api import async_playwright, expect
 
 from capabilities.contracts import Decision
-from capabilities.dashboard import create_dashboard_app
+from capabilities.dashboard import codespaces_origins, create_dashboard_app
+from capabilities.errors import ExecutionError
 from tests.test_discovery import FixturePlanner
 
 
@@ -506,3 +507,125 @@ async def test_new_workflow_web_discovery_then_matching_replay(studio_url, monke
             assert not errors
         finally:
             await browser.close()
+
+
+@pytest.mark.browser
+@pytest.mark.parametrize("recovers", [True, False])
+async def test_dashboard_shows_model_retry_and_actionable_timeout(
+    studio_url, monkeypatch, artifact, recovers
+):
+    class TimeoutFixturePlanner(FixturePlanner):
+        def __init__(self, *args, **kwargs):
+            super().__init__(
+                [
+                    *(Decision(action=s.action, reason="advance") for s in artifact.steps),
+                    Decision(finish=True, reason="verify_goal"),
+                ]
+            )
+
+        async def decide(self, goal, contract, observation):
+            if self.calls == 2 or (not recovers and self.calls == 3):
+                self.calls += 1
+                raise ExecutionError("model_timeout")
+            return await super().decide(goal, contract, observation)
+
+        async def close(self):
+            pass
+
+    monkeypatch.setenv("GEMINI_API_KEY", "test-fixture-key")
+    monkeypatch.setattr("capabilities.gemini.GeminiPlanner", TimeoutFixturePlanner)
+    origin, manager, _ = studio_url
+    async with async_playwright() as runtime:
+        browser = await runtime.chromium.launch()
+        page = await browser.new_page()
+        try:
+            await page.goto(origin)
+            await page.get_by_role("button", name="Discover with AI", exact=True).click()
+            await page.get_by_role("button", name="Discover and save", exact=False).click()
+            await expect(page.locator("#run-status")).to_have_text(
+                "Success" if recovers else "Stopped", timeout=20000
+            )
+            if not recovers:
+                await expect(page.locator("#result-message")).to_contain_text(
+                    "The model did not respond in time"
+                )
+                await expect(page.locator("#result-message")).to_contain_text(
+                    "No capability was saved"
+                )
+            await page.get_by_role("button", name="Activity", exact=True).click()
+            await expect(page.locator("#events")).to_contain_text(
+                "Temporary model failure · retrying decision"
+            )
+            run = next(iter(manager.runs.values()))
+            assert run.planner.calls == (8 if recovers else 4)
+            assert sum(e["event"] == "action_completed" for e in run.events()) == (
+                6 if recovers else 2
+            )
+            assert (run.evidence.root / "capability.json").exists() is recovers
+        finally:
+            await browser.close()
+
+
+@pytest.mark.parametrize(
+    "variable,value,port",
+    [
+        ("CODESPACES", "false", 8766),
+        ("CODESPACE_NAME", "demo.evil.test/path", 8766),
+        ("CODESPACE_NAME", "demo\r\nHost: evil.test", 8766),
+        ("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN", "evil.test", 8766),
+        ("CODESPACES", "true", 0),
+    ],
+)
+def test_codespaces_rejects_invalid_forwarding_configuration(monkeypatch, variable, value, port):
+    monkeypatch.setenv("CODESPACES", "true")
+    monkeypatch.setenv("CODESPACE_NAME", "reviewer-demo-abc123")
+    monkeypatch.setenv("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN", "app.github.dev")
+    monkeypatch.setenv(variable, value)
+    with pytest.raises(ValueError):
+        codespaces_origins(port, 8767)
+
+
+@pytest.mark.browser
+async def test_private_forwarding_preserves_csrf_and_internal_browser_replay(
+    monkeypatch, tmp_path, sandbox_url
+):
+    monkeypatch.setenv("CODESPACES", "true")
+    monkeypatch.setenv("CODESPACE_NAME", "reviewer-demo-abc123")
+    monkeypatch.setenv("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN", "app.github.dev")
+    origin, public_bank = codespaces_origins(8766, 8767)
+    app = create_dashboard_app(origin, sandbox_url, tmp_path, bank_public_origin=public_bank)
+    manager = app.state.manager
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url=origin) as client:
+        try:
+            html = (await client.get("/")).text
+            csrf = re.search(r'name="studio-csrf" content="([^"]+)"', html).group(1)
+            assert (await client.get("/api/catalog")).status_code == 403
+            client.headers.update({"Origin": origin, "X-Studio-CSRF": csrf})
+            catalog = (await client.get("/api/catalog")).json()
+            assert catalog["bank_origin"] == public_bank
+            assert manager.bank_origin == sandbox_url
+            body = {
+                "capability_id": catalog["capabilities"][0]["id"],
+                "inputs": {"member_id": "10042", "product": "Checking", "nickname": "Cloud demo"},
+            }
+            assert (
+                await client.post("/api/runs", json=body, headers={"Origin": "https://evil.test"})
+            ).status_code == 403
+            assert (
+                await client.get("/", headers={"Host": "another-8766.app.github.dev"})
+            ).status_code == 400
+            forged = await client.post(
+                "/api/runs",
+                json=body,
+                headers={"Origin": "https://evil.test", "X-Forwarded-Host": origin.split("//")[1]},
+            )
+            assert forged.status_code == 403 and not manager.runs
+            response = await client.post("/api/runs", json=body)
+            assert response.status_code == 202
+            run = await wait_run(manager, response.json()["id"])
+            assert run.result.status == "success" and run.result.model_calls == 0
+            assert run.result.outputs["member_id"] == "10042"
+            assert run.result.outputs["nickname"] == "Cloud demo"
+            assert run.surface.policy.origin == sandbox_url
+        finally:
+            await manager.close()

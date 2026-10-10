@@ -66,6 +66,11 @@ clicks are never automatically repeated: delivery might already have occurred. A
 pre-action checkpoint before a single retry of a permitted reversible step. Final mutations are blocked. Native browser prompts are cancelled and reported as hard failures;
 HTML dialogs support live handoff.
 
+Discovery retries a transient model failure once per undecided step, at most twice per run. It
+rechecks the same browser checkpoint and observes again, without repeating completed UI actions.
+Each decision respects the remaining run budget and a 75-second deadline. Quota, authentication,
+and invalid decisions are not retried. Failed request usage may be unknown; token counts are not billing caps.
+
 Results separate success with declared outputs, a named business outcome, and failure with step,
 expected/observed state, and an evidence reference. Logs never copy raw browser or provider exception
 messages. Failure evidence is a masked screenshot, or a sanitized structural record when capture is
@@ -120,6 +125,7 @@ unknown screens withhold pixels. These are application-specific masks, not a gen
 The sample contains only synthetic data and makes no regulatory-compliance claim. Production requires
 qualified masks, restricted model egress, retention controls, audited operator identity, and isolated
 workers. The local console trusts the OS user, uses origin/CSRF checks, and has no enterprise login.
+Optional Codespaces mode trusts one explicit HTTPS origin and requires private forwarded ports.
 The web console's in-memory preview and caller outputs expose synthetic values locally; those pixels
 are never sent to the model or saved as execution evidence. Unknown screens withhold the preview.
 
@@ -131,7 +137,7 @@ and automatic cross-tenant specialization are omitted. Crash recovery closes the
 than pretending an in-memory session can be reconstructed. There is no autonomous LLM fallback on replay.
 
 Repeated-run stability and multiple servicing workflows are demonstrated. The genuine discovery/replay evidence and
-submission gate pass; 115 local tests cover the execution and control boundaries. Next steps are a
+submission gate pass; 141 local tests cover the execution and control boundaries. Next steps are a
 manual desktop handoff recording, vendor/profile qualification, and an approval registry. Live model evidence covers sub-account, dispute, and card review; three other goals have only fixture-planner
 browser validation. Two expanded address-discovery attempts stopped on provider unavailability.
 Failures are retained; the successful runs are not a discovery reliability benchmark.

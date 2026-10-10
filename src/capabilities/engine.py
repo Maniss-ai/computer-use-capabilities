@@ -32,8 +32,11 @@ class Executor:
         self.paused = 0.0
         self.current_step: str | None = None
 
+    def remaining_seconds(self) -> float:
+        return self.policy.timeout_seconds - (time.monotonic() - self.started - self.paused)
+
     def check_budget(self) -> None:
-        if time.monotonic() - self.started - self.paused > self.policy.timeout_seconds:
+        if self.remaining_seconds() <= 0:
             raise ExecutionError("run_timeout")
 
     async def handoff(self, reason: str, step: str, expected: str | None) -> None:

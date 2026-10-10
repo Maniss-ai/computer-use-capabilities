@@ -1,0 +1,26 @@
+{
+  "name": "Capability Studio",
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.12-bookworm",
+  "forwardPorts": [
+    8766,
+    8767
+  ],
+  "portsAttributes": {
+    "8766": {
+      "label": "Capability Studio",
+      "onAutoForward": "notify"
+    },
+    "8767": {
+      "label": "Harbor Ledger Bank",
+      "onAutoForward": "silent"
+    }
+  },
+  "containerEnv": {
+    "PLAYWRIGHT_BROWSERS_PATH": "${containerWorkspaceFolder}/.browser-cache"
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "remoteUser": "vscode",
+  "remoteEnv": {
+    "PATH": "${containerEnv:PATH}:/home/vscode/.local/bin"
+  }
+}

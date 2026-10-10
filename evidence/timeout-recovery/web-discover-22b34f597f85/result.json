@@ -1,0 +1,15 @@
+{
+  "status": "failure",
+  "run_id": "web-discover-22b34f597f85",
+  "outputs": {},
+  "outcome": null,
+  "error": {
+    "code": "model_timeout",
+    "step": "step_003",
+    "expected": null,
+    "observed": null,
+    "evidence": "failure-0011.png"
+  },
+  "model_calls": 3,
+  "human_interventions": 0
+}

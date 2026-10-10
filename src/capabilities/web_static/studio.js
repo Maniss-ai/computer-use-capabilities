@@ -295,6 +295,8 @@ const names = {
   action_completed: "Action completed",
   checkpoint_verified: "Checkpoint verified",
   model_response: "Model response",
+  model_request_started: "Waiting for model response",
+  model_retry_scheduled: "Temporary model failure · retrying decision",
   decision: "AI decision",
   success_verified: "Outputs verified",
   artifact_saved: "Capability saved",
@@ -367,6 +369,18 @@ const reasons = {
   visual_anchor_missing:
     "The expected visual control is missing. Inspect the page or abort this demonstration.",
 };
+const resultReasons = {
+  model_timeout:
+    "The model did not respond in time. Any permitted retries have ended. No capability was saved. Try discovery again later, or replay an existing saved capability without a model.",
+  model_service_unavailable:
+    "The model service is temporarily unavailable. Any permitted retries have ended. No capability was saved. Try again later; existing capabilities can still replay without a model.",
+  model_connection_failed:
+    "The model service could not be reached. Any permitted retries have ended. Check your connection before trying discovery again.",
+  model_rate_limited:
+    "The model provider rejected the request because of its quota or rate limit. This is not automatically retried. Try later, or use Replay capability without a model.",
+  run_timeout:
+    "The run reached its time limit and stopped. No further actions will run. Check Activity for the last completed step.",
+};
 function renderResult(result) {
   $("result-empty").hidden = !!result;
   $("result-content").hidden = !result;
@@ -380,7 +394,8 @@ function renderResult(result) {
   $("result-message").textContent =
     result.status === "success"
       ? "The engine checked these values against the actual banking UI. No banking record was changed or request submitted."
-      : (result.outcome || result.error?.code || "Unknown result").replaceAll(
+      : resultReasons[result.error?.code] ||
+        (result.outcome || result.error?.code || "Unknown result").replaceAll(
           "_",
           " ",
         );

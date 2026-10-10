@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import re
 import secrets
 import socket
 import time
@@ -14,6 +15,7 @@ from contextlib import asynccontextmanager, suppress
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal
+from urllib.parse import urlsplit
 
 import uvicorn
 from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
@@ -316,7 +318,23 @@ class RunManager:
                     await run.task
 
 
-def create_dashboard_app(origin: str, bank_origin: str, root: Path) -> FastAPI:
+def codespaces_origins(port: int, bank_port: int) -> tuple[str, str]:
+    """Explicit opt-in to one private Codespaces forwarding host, never wildcard trust."""
+    name = os.environ.get("CODESPACE_NAME", "")
+    domain = os.environ.get("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN", "")
+    if (
+        os.environ.get("CODESPACES") != "true"
+        or not re.fullmatch(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?", name)
+        or domain != "app.github.dev"
+        or not all(1 <= value <= 65535 for value in (port, bank_port))
+    ):
+        raise ValueError("Use --codespaces only inside a GitHub Codespace on app.github.dev.")
+    return f"https://{name}-{port}.{domain}", f"https://{name}-{bank_port}.{domain}"
+
+
+def create_dashboard_app(
+    origin: str, bank_origin: str, root: Path, *, bank_public_origin: str | None = None
+) -> FastAPI:
     manager = RunManager(bank_origin, root)
 
     @asynccontextmanager
@@ -326,7 +344,9 @@ def create_dashboard_app(origin: str, bank_origin: str, root: Path) -> FastAPI:
 
     app = FastAPI(title="Capability Studio", docs_url=None, redoc_url=None, lifespan=lifespan)
     app.state.manager = manager
-    app.add_middleware(TrustedHostMiddleware, allowed_hosts=["127.0.0.1"])
+    app.add_middleware(
+        TrustedHostMiddleware, allowed_hosts=["127.0.0.1", urlsplit(origin).hostname or "127.0.0.1"]
+    )
     csrf = secrets.token_urlsafe(32)
     app.mount("/assets", StaticFiles(directory=PACKAGE / "web_static"), name="assets")
 
@@ -400,7 +420,7 @@ def create_dashboard_app(origin: str, bank_origin: str, root: Path) -> FastAPI:
                 for name, key in (("gemini", "GEMINI_API_KEY"), ("anthropic", "ANTHROPIC_API_KEY"))
             },
             "workflows": [workflow.model_dump(mode="json") for workflow in workflows().values()],
-            "bank_origin": bank_origin,
+            "bank_origin": bank_public_origin or bank_origin,
         }
 
     @api.get("/runs")
@@ -485,10 +505,16 @@ def create_dashboard_app(origin: str, bank_origin: str, root: Path) -> FastAPI:
     return app
 
 
-async def serve_dashboard(port: int, bank_port: int, root: Path) -> None:
+async def serve_dashboard(
+    port: int, bank_port: int, root: Path, *, codespaces: bool = False
+) -> None:
     """Start both local surfaces together; fail immediately if either port is occupied."""
     from capabilities.sandbox.app import app as bank_app
 
+    local_origin, bank_origin = f"http://127.0.0.1:{port}", f"http://127.0.0.1:{bank_port}"
+    origin, bank_public_origin = (
+        codespaces_origins(port, bank_port) if codespaces else (local_origin, bank_origin)
+    )
     sockets: list[socket.socket] = []
     tasks: list[asyncio.Task[None]] = []
     servers: list[uvicorn.Server] = []
@@ -499,13 +525,17 @@ async def serve_dashboard(port: int, bank_port: int, root: Path) -> None:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             sock.bind(("127.0.0.1", value))
             sock.setblocking(False)
-        origin, bank_origin = f"http://127.0.0.1:{port}", f"http://127.0.0.1:{bank_port}"
-        dashboard = create_dashboard_app(origin, bank_origin, root)
+        dashboard = create_dashboard_app(
+            origin, bank_origin, root, bank_public_origin=bank_public_origin
+        )
         for app, sock in zip((bank_app, dashboard), sockets, strict=True):
             server = uvicorn.Server(uvicorn.Config(app, access_log=False, log_level="warning"))
             servers.append(server)
             tasks.append(asyncio.create_task(server.serve(sockets=[sock])))
-        print(f"Capability Studio: {origin}\nSynthetic banking sandbox: {bank_origin}", flush=True)
+        print(
+            f"Capability Studio: {origin}\nSynthetic banking sandbox: {bank_public_origin}",
+            flush=True,
+        )
         await asyncio.gather(*tasks)
     finally:
         for server in servers:

@@ -107,6 +107,7 @@ class AnthropicPlanner:
                 }
             )
         self.calls += 1
+        self.evidence.event("model_request_started", model=self.model, model_calls=self.calls)
         try:
             response = await self.client.messages.create(
                 model=self.model,
@@ -181,20 +182,64 @@ class DiscoveryEngine:
         ex.evidence.event("discovery_started", model=self.planner.model, source=self.planner.source)
         recorded: list[Step] = []
         recent: list[str] = []
+        model_retries = 0
+
+        async def next_decision(before: str) -> Decision:
+            nonlocal model_retries
+            # Only retry obtaining a decision: no proposed UI action has been
+            # dispatched. One retry per decision, at most two across the run.
+            for attempt in (1, 2):
+                await ex.guard(before)
+                if self.planner.tokens >= ex.policy.max_model_tokens:
+                    raise ExecutionError("model_token_budget_exceeded")
+                observation = await ex.surface.observation()
+                ex.check_budget()
+                remaining = ex.remaining_seconds()
+                timeout = min(ex.policy.model_decision_timeout_seconds, remaining)
+                try:
+                    async with asyncio.timeout(timeout):
+                        decision = await self.planner.decide(goal, contract, observation)
+                except TimeoutError:
+                    code = (
+                        "run_timeout"
+                        if remaining <= ex.policy.model_decision_timeout_seconds
+                        else "model_timeout"
+                    )
+                    ex.evidence.event("model_request_failed", code=code, step=ex.current_step)
+                    failure = ExecutionError(code)
+                except ExecutionError as error:
+                    failure = error
+                else:
+                    # A response arriving after the run budget cannot authorize
+                    # another browser action, even if its syntax is valid.
+                    ex.check_budget()
+                    return decision
+                if (
+                    failure.code
+                    not in {"model_timeout", "model_connection_failed", "model_service_unavailable"}
+                    or attempt == 2
+                    or model_retries >= ex.policy.max_model_retries
+                ):
+                    raise failure
+                ex.check_budget()
+                model_retries += 1
+                delay = min(ex.policy.model_retry_delay_seconds, ex.remaining_seconds())
+                ex.evidence.event(
+                    "model_retry_scheduled",
+                    code=failure.code,
+                    step=ex.current_step,
+                    attempt=attempt + 1,
+                    duration_ms=round(delay * 1000),
+                )
+                await asyncio.sleep(delay)
+            raise AssertionError("Unreachable decision attempt")
 
         async def work() -> dict[str, str | bool]:
             ex.policy.validate_goal(contract)
             for index in range(ex.policy.max_steps):
                 ex.current_step = f"step_{index + 1:03d}"
                 before = await ex.guard()
-                if self.planner.tokens >= ex.policy.max_model_tokens:
-                    raise ExecutionError("model_token_budget_exceeded")
-                observation = await ex.surface.observation()
-                try:
-                    async with asyncio.timeout(45):
-                        decision = await self.planner.decide(goal, contract, observation)
-                except TimeoutError as error:
-                    raise ExecutionError("model_timeout") from error
+                decision = await next_decision(before)
                 fields: dict[str, Any] = {"reason": decision.reason, "step": ex.current_step}
                 if decision.action:
                     # Unknown model strings are not safe evidence. Only echo target

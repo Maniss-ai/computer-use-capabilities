@@ -1,0 +1,20 @@
+{
+  "scope": "Original timeout failure, genuine post-fix discovery, and matching replay with new inputs. Retry recovery is separately tested with injected provider failures.",
+  "original_failure": "web-discover-22b34f597f85",
+  "original_cause": "Third model decision exceeded the configured response timeout; two UI actions completed. Provider outage versus network delay is not established.",
+  "discovery_run": "web-discover-55ce04c42502",
+  "discovery_model_calls": 7,
+  "discovery_seconds": 86.2,
+  "replay_run": "web-replay-f96d718bb6e0",
+  "replay_model_calls": 0,
+  "replay_seconds": 5.3,
+  "artifact_sha256": "79c55e0c57820173900b857ad37363ee85e498854ca4ff57eb6201fd306cc390",
+  "changed_inputs": [
+    "member_id",
+    "product",
+    "nickname"
+  ],
+  "live_retries": 0,
+  "operator": "Computer-use assistant operated dashboard controls; genuine Gemini API chose discovery actions.",
+  "retry_tests": "Real-browser fault injection covers transient timeout, connection, service unavailability, same-checkpoint recovery, no repeated completed actions, deadlines and bounded retries."
+}

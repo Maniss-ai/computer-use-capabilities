@@ -155,7 +155,7 @@ No. That link opens an independent banking session. Its activity is not recorded
 
 **32. What happens if Google is unavailable or quota is exhausted?**
 
-Discovery stops with a classified provider error. The current adapter has bounded waits and no automatic paid-provider fallback or request retry. It does not claim that a failed run created a capability. Existing capabilities still replay without a Gemini key or model connection when the target application is reachable; our demo target is local.
+Temporary timeouts, connection failures, and service-unavailable responses can retry the undecided step once, with at most two retries across a discovery run. The engine retains the browser, checks its checkpoint, and takes a fresh observation before asking again. Completed banking actions are not repeated. Gemini has a 60-second response timeout; a decision including request spacing is limited to 75 seconds or the remaining run budget. Quota, authentication, and invalid-response errors stop without retry. Persistent errors stop visibly and do not create a capability. There is no paid-provider fallback. Existing capabilities still replay without a Gemini key or model connection when the target application is reachable; our demo target is local.
 
 **33. Can this already automate another website or any banking task?**
 

@@ -5,7 +5,7 @@
 A computer-use backend and web console for six workflows in a synthetic legacy banking application: real browser actions,
 versioned capabilities, deterministic replay, policy enforcement, and human control of the same live session.
 
-> **Verified:** **115 tests pass**, including real-browser coverage of all six goals. Genuine Gemini
+> **Verified:** **141 tests pass**, including real-browser coverage of all six goals. Genuine Gemini
 > discovery and matching **zero-model replay** are recorded for sub-account review, transaction
 > disputes, and card replacement. Three other goals are ready for discovery but have no successful live-model evidence yet.
 > Inspect the [evidence index](evidence/README.md), [workflow guide](docs/BANKING_WORKFLOWS.md), and [report](REPORT.md).
@@ -13,6 +13,15 @@ versioned capabilities, deterministic replay, policy enforcement, and human cont
 ![Capability Studio showing a completed replay against the synthetic banking UI](docs/screenshots/banking-workflows.png)
 
 ## Start here
+
+New to the project? Start with the [reviewer guide](docs/REVIEWER_GUIDE.md) or the
+[illustrated PDF](output/pdf/capability-studio-reviewer-guide.pdf). They explain the problem, the first
+no-key replay, discovery, all six input sets, and human takeover.
+
+[Open in GitHub Codespaces](https://codespaces.new/Maniss-ai/computer-use-capabilities?quickstart=1)
+using the [private-environment instructions](docs/HOSTING.md). The launch configuration is prepared and
+its origin/replay behavior is integration-tested locally; a real Codespace has not been provisioned.
+GitHub Pages cannot host the Python/Chromium servers.
 
 Requirements: Python 3.12, [uv](https://docs.astral.sh/uv/getting-started/installation/), and a supported
 macOS or Linux desktop for manual takeover. Headless replay/tests also run on Linux CI. All application
@@ -116,7 +125,12 @@ uv run capabilities discover --provider gemini \
 
 The default is `gemini-3.1-flash-lite`; override with `--model` or `CAPABILITIES_GEMINI_MODEL`.
 Requests are spaced at least 13 seconds apart to accommodate small quotas. A quota rejection stops
-with `model_rate_limited`; no automatic retries, billing changes, or paid-provider fallback occur.
+with `model_rate_limited`; quota and authentication errors are not retried. A temporary timeout,
+connection failure, or service-unavailable response may retry the undecided step once, with at most
+two retries in a discovery run. Before each retry the engine checks the same browser checkpoint and
+takes a fresh observation; completed UI actions are not repeated. Retries consume additional quota.
+Gemini has a 60-second response timeout; each decision (including request spacing) is capped at
+75 seconds or the remaining run budget, whichever is shorter. There is no billing change or provider fallback.
 The provider reads the masked screenshot and returns a JSON decision checked against the same contract.
 
 ### Anthropic
@@ -267,7 +281,7 @@ flowchart LR
 - The default profile permits only the sandbox's origin, enumerated routes, and six action rules.
   Final submission is absent from the network allowlist. Permissions are not supplied by the model.
 - Discovery defaults to 35 decisions, 360 seconds of active execution in the Harbor profile, and an observed-token budget.
-  In-flight provider usage can exceed the token threshold by one request; it is not a dollar cap.
+  Unreported usage from timed-out requests cannot be measured; observed-token limits are not a dollar cap.
 - Browser-native alert/confirm/prompt dialogs are cancelled and reported as hard failures; the supported
   live handoff demonstration uses HTML dialogs and expired-session screens.
 - Screenshots are masked for this application profile. Unknown screens get a structural evidence file.

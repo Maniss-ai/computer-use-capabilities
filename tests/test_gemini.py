@@ -147,3 +147,35 @@ async def test_gemini_truncation_cannot_be_treated_as_success(tmp_path, artifact
 def test_gemini_model_cannot_redirect_credentials(tmp_path):
     with pytest.raises(ValueError):
         GeminiPlanner("test-key", "https://other.example/", Evidence(tmp_path, "invalid-model"))
+
+
+@pytest.mark.parametrize(
+    "failure,code",
+    [(httpx.ReadTimeout, "model_timeout"), (httpx.ConnectError, "model_connection_failed")],
+)
+async def test_gemini_logs_transport_failure_without_sensitive_details(
+    tmp_path, artifact, failure, code
+):
+    evidence = Evidence(tmp_path, "transport-failure")
+    planner = GeminiPlanner("private-test-key", "gemini-3.8-flash", evidence, interval_seconds=0)
+    assert planner.client.timeout.read == 60 and planner.client.timeout.connect == 10
+    await planner.client.aclose()
+
+    def fail(request):
+        raise failure("private-provider-exception", request=request)
+
+    planner.client = httpx.AsyncClient(
+        base_url="https://generativelanguage.googleapis.com/v1beta/",
+        transport=httpx.MockTransport(fail),
+    )
+    try:
+        with pytest.raises(ExecutionError, match=code):
+            await planner.decide("Prepare a review", artifact.goal, {"screen": "Find a member"})
+        assert planner.calls == 1  # Retry policy belongs to discovery, not the HTTP transport.
+        persisted = (evidence.root / "events.jsonl").read_text()
+        log = [json.loads(line) for line in persisted.splitlines()]
+        assert [e["event"] for e in log] == ["model_request_started", "model_request_failed"]
+        assert log[-1]["code"] == code
+        assert "private-provider-exception" not in persisted and "private-test-key" not in persisted
+    finally:
+        await planner.close()

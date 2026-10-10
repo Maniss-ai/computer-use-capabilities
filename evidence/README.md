@@ -83,7 +83,7 @@ provider logs. The source of each run remains part of the reviewer-visible evide
 ## Expanded banking workflows
 
 All six goal paths pass real-browser compilation/replay tests with explicitly scripted test planners.
-The current suite passes **115 tests**. In addition, [the expanded live manifest](expanded/manifest.json)
+The current suite passes **141 tests**. In addition, [the expanded live manifest](expanded/manifest.json)
 records a genuine Gemini transaction-dispute discovery (9 UI actions, 10 model calls), followed by
 replay with a second member and transaction (9 actions, zero model calls). Its live browser run took
 128.0 seconds; replay took 7.3 seconds, including web-preview presentation pauses.
@@ -107,4 +107,12 @@ server restart was also verified with the same dashboard tab left open; it recon
 After recovery, genuine Gemini card discovery completed in **135.2 seconds**, with **9 UI actions and
 10 model calls**. Its matching replay used member 10042, CARD-10042, Lost, and Registered address, and
 completed in **7.2 seconds with zero model calls**. The unmodified masked run records and artifact are
-in [expanded/manifest.json](expanded/manifest.json). Network failures are not automatically resubmitted.
+in [expanded/manifest.json](expanded/manifest.json). Dashboard start requests are not automatically resubmitted after network failures.
+
+## Discovery timeout recovery
+
+The [timeout manifest](timeout-recovery/manifest.json) retains the original failed run and a genuine
+post-fix discovery of the same goal (7 model calls, 86.2 seconds). Matching replay changed all three
+inputs and succeeded in 5.3 seconds with zero model calls. This live discovery needed no retry.
+The bounded model-retry path is verified separately with injected failures in real-browser tests.
+Completed UI actions are never repeated by a model-request retry.

@@ -96,7 +96,7 @@ class GeminiPlanner:
         self.client = httpx.AsyncClient(
             base_url="https://generativelanguage.googleapis.com/v1beta/",
             headers={"x-goog-api-key": api_key},
-            timeout=30.0,
+            timeout=httpx.Timeout(60.0, connect=10.0, write=10.0, pool=10.0),
             follow_redirects=False,
         )
         self.model, self.evidence = model, evidence
@@ -109,7 +109,8 @@ class GeminiPlanner:
         self, goal: str, contract: GoalContract, observation: dict[str, Any]
     ) -> Decision:
         # Space requests for small free quotas. This is not a quota guarantee;
-        # a rejection stops the run, with no retries or paid-provider fallback.
+        # quota rejections are terminal. Discovery owns any transient retry so
+        # it can re-observe the browser and enforce the overall run budget.
         if self.last_request is not None:
             await asyncio.sleep(
                 max(0, self.interval_seconds - (time.monotonic() - self.last_request))
@@ -141,6 +142,7 @@ class GeminiPlanner:
             generation["thinkingConfig"] = {"thinkingLevel": "LOW", "includeThoughts": False}
         self.calls += 1
         self.last_request = time.monotonic()
+        self.evidence.event("model_request_started", model=self.model, model_calls=self.calls)
         try:
             response = await self.client.post(
                 f"models/{self.model}:generateContent",
@@ -151,8 +153,10 @@ class GeminiPlanner:
                 },
             )
         except httpx.TimeoutException as error:
-            raise ExecutionError("model_timeout") from error
+            self.evidence.event("model_request_failed", code="model_timeout")
+            raise ExecutionError("model_timeout", observed=type(error).__name__) from error
         except httpx.RequestError as error:
+            self.evidence.event("model_request_failed", code="model_connection_failed")
             raise ExecutionError("model_connection_failed") from error
         if response.status_code != 200:
             code = {

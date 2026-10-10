@@ -1,15 +1,15 @@
 {
-  "verified_at": "2026-10-09T14:05:19.843548+00:00",
-  "scope": "Six local servicing workflows, dashboard session recovery, real-browser regression tests, genuine dispute and card discovery/replay, and packaged CLI dispute replay outside checkout",
+  "verified_at": "2026-10-10T07:52:13.529801+00:00",
+  "scope": "Six local servicing workflows, dashboard session recovery, real-browser regression tests, genuine dispute and card discovery/replay, and packaged CLI dispute replay outside checkout; bounded model timeout recovery",
   "acceptance": {
     "command": "make verify",
-    "tests_passed": 115,
+    "tests_passed": 141,
     "tests_failed": 0,
     "lint": "passed",
     "format": "passed",
     "strict_typing": "passed",
     "offline_deliverables": "passed",
-    "test_elapsed_seconds": 115.65
+    "test_elapsed_seconds": 149.29
   },
   "replay_stability": {
     "runs": 10,
@@ -22,9 +22,10 @@
     "result": "passed",
     "packaged_cli_replay_outside_checkout": "passed",
     "dashboard_assets_and_catalog_outside_checkout": "passed",
-    "six_workflow_wheel_replay_outside_checkout": "passed: transaction dispute; zero model calls"
+    "six_workflow_wheel_replay_outside_checkout": "passed: transaction dispute; zero model calls",
+    "reviewer_wheel": "passed: newly built wheel installed outside checkout; sub-account replay-f80412787bc0 succeeded with zero model calls"
   },
-  "model_api_calls": 50,
+  "model_api_calls": 60,
   "live_discovery": {
     "run_id": "discover-2acef308bd9c",
     "status": "success",
@@ -39,7 +40,7 @@
     "scope": "Remote CI results are reported by GitHub, separately from these local measurements."
   },
   "public_repository": "https://github.com/Maniss-ai/computer-use-capabilities",
-  "model_api_call_scope": "Requests counted by recorded workflow runs; does not include separate model catalog or diagnostic probes. Unknown usage from failed/timed-out requests is not estimated.",
+  "model_api_call_scope": "Requests counted by the checked-in workflow runs; excludes user-only local runs and separate catalog/diagnostic probes. Unknown usage from failed/timed-out requests is not estimated.",
   "live_artifact_replay": {
     "run_id": "replay-ac60b915dc4f",
     "status": "success",
@@ -90,5 +91,30 @@
     ],
     "manual_restart": "verified: same open tab recovered after local server restart without reload",
     "replay_after_fix": "web-replay-f98fafc15718: success; 9 actions; zero model calls"
+  },
+  "timeout_recovery": {
+    "scope": "Original timeout failure, genuine post-fix discovery, and matching replay with new inputs. Retry recovery is separately tested with injected provider failures.",
+    "original_failure": "web-discover-22b34f597f85",
+    "original_cause": "Third model decision exceeded the configured response timeout; two UI actions completed. Provider outage versus network delay is not established.",
+    "discovery_run": "web-discover-55ce04c42502",
+    "discovery_model_calls": 7,
+    "discovery_seconds": 86.2,
+    "replay_run": "web-replay-f96d718bb6e0",
+    "replay_model_calls": 0,
+    "replay_seconds": 5.3,
+    "artifact_sha256": "79c55e0c57820173900b857ad37363ee85e498854ca4ff57eb6201fd306cc390",
+    "changed_inputs": [
+      "member_id",
+      "product",
+      "nickname"
+    ],
+    "live_retries": 0,
+    "operator": "Computer-use assistant operated dashboard controls; genuine Gemini API chose discovery actions.",
+    "retry_tests": "Real-browser fault injection covers transient timeout, connection, service unavailability, same-checkpoint recovery, no repeated completed actions, deadlines and bounded retries."
+  },
+  "codespaces": {
+    "configuration": "prepared; no GitHub Codespace provisioned",
+    "local_integration": "passed: exact forwarded origin, CSRF, host restrictions, internal bank routing and real browser replay",
+    "new_tests": 6
   }
 }

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="400" viewBox="0 0 1080 400" role="img" aria-labelledby="title desc">
+<title id="title">Discover, save, replay</title><desc id="desc">AI discovers a UI workflow. Verified success becomes a capability. Code replays it with new inputs and zero model calls.</desc>
+<rect width="1080" height="400" rx="20" fill="#f4f7f3"/>
+<text x="44" y="49" font-family="Arial,sans-serif" font-size="15" fill="#167765" font-weight="bold">CAPABILITY STUDIO / HOW IT WORKS</text>
+<rect x="52" y="137" width="280" height="160" rx="8" fill="#dce5df"/>
+<path d="M44 120 l18 -18 h280 l-18 18 Z" fill="#b8d8c9"/>
+<path d="M324 120 l18 -18 v160 l-18 18 Z" fill="#105346"/>
+<rect x="44" y="120" width="280" height="160" fill="#167765"/>
+<text x="64" y="162" fill="white" font-family="Arial,sans-serif" font-size="26" font-weight="bold">01  Discover</text>
+<text x="64" y="209" fill="white" font-family="Arial,sans-serif" font-size="17">Goal + observed UI</text>
+<text x="64" y="237" fill="white" font-family="Arial,sans-serif" font-size="17">AI proposes each next action</text>
+<rect x="402" y="137" width="280" height="160" rx="8" fill="#dce5df"/>
+<path d="M394 120 l18 -18 h280 l-18 18 Z" fill="#b8d8c9"/>
+<path d="M674 120 l18 -18 v160 l-18 18 Z" fill="#105346"/>
+<rect x="394" y="120" width="280" height="160" fill="#167765"/>
+<text x="414" y="162" fill="white" font-family="Arial,sans-serif" font-size="26" font-weight="bold">02  Save</text>
+<text x="414" y="209" fill="white" font-family="Arial,sans-serif" font-size="17">Independent success checks</text>
+<text x="414" y="237" fill="white" font-family="Arial,sans-serif" font-size="17">Typed, parameterized JSON</text>
+<rect x="752" y="137" width="280" height="160" rx="8" fill="#dce5df"/>
+<path d="M744 120 l18 -18 h280 l-18 18 Z" fill="#b8d8c9"/>
+<path d="M1024 120 l18 -18 v160 l-18 18 Z" fill="#105346"/>
+<rect x="744" y="120" width="280" height="160" fill="#167765"/>
+<text x="764" y="162" fill="white" font-family="Arial,sans-serif" font-size="26" font-weight="bold">03  Replay</text>
+<text x="764" y="209" fill="white" font-family="Arial,sans-serif" font-size="17">New inputs + same capability</text>
+<text x="764" y="237" fill="white" font-family="Arial,sans-serif" font-size="17">Fixed steps, zero model calls</text>
+<text x="44" y="349" fill="#173c3a" font-family="Arial,sans-serif" font-size="18">One policy-checked executor drives the real browser and verifies the outcome.</text></svg>

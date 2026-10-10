@@ -30,6 +30,9 @@ class Policy(Contract):
     max_steps: int = Field(default=35, ge=1, le=80)
     timeout_seconds: int = Field(default=180, ge=1, le=600)
     max_model_tokens: int = Field(default=60000, ge=1000, le=200000)
+    model_decision_timeout_seconds: float = Field(default=75, ge=0.1, le=120)
+    max_model_retries: int = Field(default=2, ge=0, le=2)
+    model_retry_delay_seconds: float = Field(default=2, ge=0, le=10)
     intervention_seconds: int = Field(default=300, ge=1, le=1800)
 
     def allows_url(self, url: str) -> bool:

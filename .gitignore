@@ -13,4 +13,5 @@ runs/
 .browser-cache/
 .DS_Store
 dist/
+tmp/
 *.egg-info/

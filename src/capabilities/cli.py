@@ -137,6 +137,9 @@ def parser() -> argparse.ArgumentParser:
     web.add_argument("--port", type=int, default=8766)
     web.add_argument("--bank-port", type=int, default=8767)
     web.add_argument("--evidence", default="runs/web")
+    web.add_argument(
+        "--codespaces", action="store_true", help="Use the current private Codespaces port URLs"
+    )
     schema = commands.add_parser("schema", help="Export the artifact JSON Schema")
     schema.add_argument("--out", default="schemas/capability.schema.json")
     for command in ("discover", "replay"):
@@ -173,7 +176,14 @@ def main() -> None:
         from capabilities.dashboard import serve_dashboard
 
         try:
-            asyncio.run(serve_dashboard(args.port, args.bank_port, Path(args.evidence)))
+            asyncio.run(
+                serve_dashboard(
+                    args.port, args.bank_port, Path(args.evidence), codespaces=args.codespaces
+                )
+            )
+        except ValueError:
+            print("Invalid Codespaces environment. See docs/HOSTING.md.", file=sys.stderr)
+            raise SystemExit(2) from None
         except OSError:
             print(
                 "A local port is unavailable. Stop the previous dashboard or choose --port and --bank-port.",
